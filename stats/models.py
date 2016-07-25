@@ -5,17 +5,6 @@ from django.db import models
 # Create your models here.
 
 
-class Question(models.Model):
-    question_text = models.CharField(max_length=200)
-    kind = models.ForeignKey(QuestionType, on_delete=models.CASCADE)
-    category = models.ForeignKey(
-        ADQuestionCategory,
-        on_delete=models.CASCADE,
-        blank=True,
-        null=True
-    )
-
-
 class QuestionType(models.Model):
     choices = (
         ('OP', 'Open'),
@@ -44,167 +33,15 @@ class ADQuestionCategory(models.Model):
     category = models.CharField(choices=choices, max_length=2)
 
 
-class AnswerOpen(models.Model):
-    question = model.ForeignKey(Question, on_delete=models.CASCADE)
-    answer = models.CharField(max_length=200)
-    answerID = models.OneToOneField(
-        Answer,
+class Question(models.Model):
+    question_text = models.CharField(max_length=200)
+    kind = models.ForeignKey(QuestionType, on_delete=models.CASCADE)
+    category = models.ForeignKey(
+        ADQuestionCategory,
         on_delete=models.CASCADE,
-        primary_key=True,
-        related_name='answer'
+        blank=True,
+        null=True
     )
-
-
-class AnswerQuiz(models.Model):
-    question = model.ForeignKey(Question, on_delete=models.CASCADE)
-    answer = models.PositiveSmallIntegerField()
-    answerID = models.OneToOneField(
-        Answer,
-        on_delete=models.CASCADE,
-        primary_key=True,
-        related_name='answer'
-    )
-
-
-class AnswerBool(models.Model):
-    question = model.ForeignKey(Question, on_delete=models.CASCADE)
-    answer = models.BooleanField()
-    answerID = models.OneToOneField(
-        Answer,
-        on_delete=models.CASCADE,
-        primary_key=True,
-        related_name='answer'
-    )
-
-
-class AnswerAgree(models.Model):
-    question = model.ForeignKey(Question, on_delete=models.CASCADE)
-    choices = (
-        (0, 'Perfer not to answer'),
-        (1, 'Strongly disagree'),
-        (2, 'Dissagree'),
-        (3, 'Somewhat disagree'),
-        (4, 'Neither agree or disagree'),
-        (5, 'Somewhat agree'),
-        (6, 'Agree'),
-        (7, 'Strongly agree'),
-    )
-    answer = models.PositiveSmallIntegerField(choices=choices)
-    answerID = models.OneToOneField(
-        Answer,
-        on_delete=models.CASCADE,
-        primary_key=True,
-        related_name='answer'
-    )
-
-
-class AnswerEthnicity(models.Model):
-    choices = (
-        ('W', 'White/Caucasian'),
-        ('O', 'Other'),
-        ('SA', 'South Asian'),
-        ('EA', 'East Asian'),
-        ('M', 'Mixed'),
-        ('HL', 'Hispanice/Latino'),
-        ('C', 'Caribbean'),
-        ('ME', 'Middle Eastern'),
-        ('BA', 'Black African'),
-        ('A', 'Amerindian'),
-    )
-    answer = models.CharField(choices=choices, max_length=2)
-    specify = model.CharField(max_length=200, blank=True, null=True)
-    answerID = models.OneToOneField(
-        Answer,
-        on_delete=models.CASCADE,
-        primary_key=True,
-        related_name='answer'
-    )
-
-
-class AnswerGender(models.Model):
-    choices = (
-        ('M', 'Male'),
-        ('F', 'Female'),
-    )
-    answer = models.CharField(choices=choices, max_length=1)
-    answerID = models.OneToOneField(
-        Answer,
-        on_delete=models.CASCADE,
-        primary_key=True,
-        related_name='answer'
-    )
-
-
-class AnswerEducationLevel(models.Model):
-    choices = (
-        (1, 'No education'),
-        (2, 'Primary education'),
-        (3, 'Lower secondary education'),
-        (4, 'Upper secondary education'),
-        (5, 'Post secondary non-tertiary education'),
-        (6, 'Short cycle tertiary education'),
-        (7, 'Bachelors Degree or equivalent'),
-        (8, 'Masters Degree or equivalent'),
-        (9, 'Doctoral Degree or  equivalent'),
-    )
-    answer = models.PositiveSmallIntegerField(choices=choices)
-    answerID = models.OneToOneField(
-        Answer,
-        on_delete=models.CASCADE,
-        primary_key=True,
-        related_name='answer'
-    )
-
-
-class Answer(models.Model):
-    question = models.ForeignKey(Question, on_delete=models.CASCADE)
-    user = models.ForeignKey(User, on_delete=models.CASCADE)
-
-
-class Projects(models.Model):
-    choices = (
-        (0, 'cancer_cells'),
-        (1, 'moon_zoo'),
-        (2, 'chimp'),
-        (3, 'worms'),
-        (4, 'galaxy_zoo_starburst'),
-        (5, 'serengeti'),
-        (6, 'radio'),
-        (7, 'm83'),
-        (8, 'wisconsin'),
-        (9, 'illustratedlife'),
-        (10, 'milky_way'),
-        (11, 'higgs_hunter'),
-        (12, 'solarstormwatch'),
-        (13, 'chicago'),
-        (14, 'whales'),
-        (15, 'condor'),
-        (16, 'planet_hunter'),
-        (17, 'crater'),
-        (18, 'asteroid'),
-        (19, 'kelp'),
-        (20, 'spacewarp'),
-        (21, 'oldweather'),
-        (22, 'andromeda'),
-        (23, 'cyclone_center'),
-        (24, 'sea_floor'),
-        (25, 'sunspot'),
-        (26, 'notes_from_nature'),
-        (27, 'leaf'),
-        (28, 'planet_four'),
-        (29, 'orchid'),
-        (30, 'penguin'),
-        (31, 'war_diary'),
-        (32, 'wise'),
-        (33, 'galaxy_zoo'),
-        (34, 'ancient_lives'),
-        (35, 'plankton'),
-        (36, 'bat_detective'),
-    )
-    project = models.PositiveSmallIntegerField(choices=choices)
-    classifications = model.PositiveSmallIntegerField()
-    home_project = models.BooleanField()
-    user = models.ForeignKey(User, on_delete=models.CASCADE)
 
 
 class User(models.Model):
@@ -248,6 +85,165 @@ class User(models.Model):
         ('In', 'Internatinal'),
     )
     country = models.CharField(choices=country_choices, max_length=2)
+
+
+class Answer(models.Model):
+    question = models.ForeignKey(Question, on_delete=models.CASCADE)
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+
+
+class AnswerOpen(models.Model):
+    answer = models.CharField(max_length=200)
+    answerID = models.OneToOneField(
+        Answer,
+        on_delete=models.CASCADE,
+        primary_key=True,
+        related_name='answerOpen'
+    )
+
+
+class AnswerQuiz(models.Model):
+    answer = models.PositiveSmallIntegerField()
+    answerID = models.OneToOneField(
+        Answer,
+        on_delete=models.CASCADE,
+        primary_key=True,
+        related_name='answerQuiz'
+    )
+
+
+class AnswerBool(models.Model):
+    answer = models.BooleanField()
+    answerID = models.OneToOneField(
+        Answer,
+        on_delete=models.CASCADE,
+        primary_key=True,
+        related_name='answerBool'
+    )
+
+
+class AnswerAgree(models.Model):
+    choices = (
+        (0, 'Perfer not to answer'),
+        (1, 'Strongly disagree'),
+        (2, 'Dissagree'),
+        (3, 'Somewhat disagree'),
+        (4, 'Neither agree or disagree'),
+        (5, 'Somewhat agree'),
+        (6, 'Agree'),
+        (7, 'Strongly agree'),
+    )
+    answer = models.PositiveSmallIntegerField(choices=choices)
+    answerID = models.OneToOneField(
+        Answer,
+        on_delete=models.CASCADE,
+        primary_key=True,
+        related_name='answerAD'
+    )
+
+
+class AnswerEthnicity(models.Model):
+    choices = (
+        ('W', 'White/Caucasian'),
+        ('O', 'Other'),
+        ('SA', 'South Asian'),
+        ('EA', 'East Asian'),
+        ('M', 'Mixed'),
+        ('HL', 'Hispanice/Latino'),
+        ('C', 'Caribbean'),
+        ('ME', 'Middle Eastern'),
+        ('BA', 'Black African'),
+        ('A', 'Amerindian'),
+    )
+    answer = models.CharField(choices=choices, max_length=2)
+    specify = models.CharField(max_length=200, blank=True, null=True)
+    answerID = models.OneToOneField(
+        Answer,
+        on_delete=models.CASCADE,
+        primary_key=True,
+        related_name='answerEthnicity'
+    )
+
+
+class AnswerGender(models.Model):
+    choices = (
+        ('M', 'Male'),
+        ('F', 'Female'),
+    )
+    answer = models.CharField(choices=choices, max_length=1)
+    answerID = models.OneToOneField(
+        Answer,
+        on_delete=models.CASCADE,
+        primary_key=True,
+        related_name='answerGender'
+    )
+
+
+class AnswerEducationLevel(models.Model):
+    choices = (
+        (1, 'No education'),
+        (2, 'Primary education'),
+        (3, 'Lower secondary education'),
+        (4, 'Upper secondary education'),
+        (5, 'Post secondary non-tertiary education'),
+        (6, 'Short cycle tertiary education'),
+        (7, 'Bachelors Degree or equivalent'),
+        (8, 'Masters Degree or equivalent'),
+        (9, 'Doctoral Degree or  equivalent'),
+    )
+    answer = models.PositiveSmallIntegerField(choices=choices)
+    answerID = models.OneToOneField(
+        Answer,
+        on_delete=models.CASCADE,
+        primary_key=True,
+        related_name='answerEdu'
+    )
+
+
+class Projects(models.Model):
+    choices = (
+        (0, 'cancer_cells'),
+        (1, 'moon_zoo'),
+        (2, 'chimp'),
+        (3, 'worms'),
+        (4, 'galaxy_zoo_starburst'),
+        (5, 'serengeti'),
+        (6, 'radio'),
+        (7, 'm83'),
+        (8, 'wisconsin'),
+        (9, 'illustratedlife'),
+        (10, 'milky_way'),
+        (11, 'higgs_hunter'),
+        (12, 'solarstormwatch'),
+        (13, 'chicago'),
+        (14, 'whales'),
+        (15, 'condor'),
+        (16, 'planet_hunter'),
+        (17, 'crater'),
+        (18, 'asteroid'),
+        (19, 'kelp'),
+        (20, 'spacewarp'),
+        (21, 'oldweather'),
+        (22, 'andromeda'),
+        (23, 'cyclone_center'),
+        (24, 'sea_floor'),
+        (25, 'sunspot'),
+        (26, 'notes_from_nature'),
+        (27, 'leaf'),
+        (28, 'planet_four'),
+        (29, 'orchid'),
+        (30, 'penguin'),
+        (31, 'war_diary'),
+        (32, 'wise'),
+        (33, 'galaxy_zoo'),
+        (34, 'ancient_lives'),
+        (35, 'plankton'),
+        (36, 'bat_detective'),
+    )
+    project = models.PositiveSmallIntegerField(choices=choices)
+    classifications = models.PositiveSmallIntegerField()
+    home_project = models.BooleanField()
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
 
 
 class SurveyProject(models.Model):
