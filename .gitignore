@@ -56,6 +56,7 @@ coverage.xml
 *.log
 local_settings.py
 */migrations/[0-9]*.py
+staticfiles
 
 # Flask stuff:
 instance/
@@ -93,3 +94,4 @@ ENV/
 .ropeproject
 
 *.xlsx
+*.pdf

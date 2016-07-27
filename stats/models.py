@@ -1,10 +1,11 @@
 from __future__ import unicode_literals
-
+from django.utils.encoding import python_2_unicode_compatible
 from django.db import models
 
 # Create your models here.
 
 
+@python_2_unicode_compatible
 class QuestionType(models.Model):
     choices = (
         ('OP', 'Open'),
@@ -17,7 +18,11 @@ class QuestionType(models.Model):
     )
     kind = models.CharField(choices=choices, max_length=2)
 
+    def __str__(self):
+        return self.kind
 
+
+@python_2_unicode_compatible
 class ADQuestionCategory(models.Model):
     choices = (
         ('PE', 'Protective and Enhancement'),
@@ -32,8 +37,21 @@ class ADQuestionCategory(models.Model):
     )
     category = models.CharField(choices=choices, max_length=2)
 
+    def __str__(self):
+        return self.category
 
+
+@python_2_unicode_compatible
+class ADQuestionContext(models.Model):
+    context = models.CharField(max_length=200)
+
+    def __str__(self):
+        return self.context
+
+
+@python_2_unicode_compatible
 class Question(models.Model):
+    number = models.PositiveSmallIntegerField(primary_key=True)
     question_text = models.CharField(max_length=200)
     kind = models.ForeignKey(QuestionType, on_delete=models.CASCADE)
     category = models.ForeignKey(
@@ -42,8 +60,18 @@ class Question(models.Model):
         blank=True,
         null=True
     )
+    context = models.ForeignKey(
+        ADQuestionContext,
+        on_delete=models.CASCADE,
+        blank=True,
+        null=True
+    )
+
+    def __str__(self):
+        return self.question_text
 
 
+@python_2_unicode_compatible
 class User(models.Model):
     talk_posts = models.PositiveSmallIntegerField()
     duration_first_last_talk_days = models.PositiveSmallIntegerField()
@@ -86,6 +114,9 @@ class User(models.Model):
     )
     country = models.CharField(choices=country_choices, max_length=2)
 
+    def __str__(self):
+        return self.id
+
 
 class Answer(models.Model):
     question = models.ForeignKey(Question, on_delete=models.CASCADE)
@@ -103,7 +134,19 @@ class AnswerOpen(models.Model):
 
 
 class AnswerQuiz(models.Model):
-    answer = models.PositiveSmallIntegerField()
+    score = models.PositiveSmallIntegerField()
+    percent = models.FloatField()
+    maxScore = models.PositiveSmallIntegerField()
+    choices = (
+        (1, 'Very unconfident'),
+        (2, 'Unconfident'),
+        (3, 'Somewhat unconfident'),
+        (4, 'Neither confident or unconfident'),
+        (5, 'Somewhat confident'),
+        (6, 'Confident'),
+        (7, 'Very confident'),
+    )
+    confidence = models.PositiveSmallIntegerField(choices=choices)
     answerID = models.OneToOneField(
         Answer,
         on_delete=models.CASCADE,

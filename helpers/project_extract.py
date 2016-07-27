@@ -1,7 +1,9 @@
 from openpyxl import load_workbook
 from pprint import pprint
 
-wb = load_workbook(filename='ORIGINAL DATA IDS ETHNICITY.xlsx')
+wb = load_workbook(
+    filename='../stats/management/commands/ORIGINAL DATA IDS ETHNICITY.xlsx'
+)
 ws = wb['All']
 
 names = {}
