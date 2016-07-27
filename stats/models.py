@@ -73,6 +73,7 @@ class Question(models.Model):
 
 @python_2_unicode_compatible
 class User(models.Model):
+    id  = models.PositiveSmallIntegerField(primary_key=True)
     talk_posts = models.PositiveSmallIntegerField()
     duration_first_last_talk_days = models.PositiveSmallIntegerField()
     total_n_classifications = models.PositiveSmallIntegerField()
