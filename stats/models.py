@@ -16,7 +16,7 @@ class QuestionType(models.Model):
         ('ET', 'Ethnicity'),
         ('ED', 'Education level'),
     )
-    kind = models.CharField(choices=choices, max_length=2)
+    kind = models.CharField(choices=choices, max_length=2, db_index=True)
 
     def __str__(self):
         return self.kind
@@ -35,7 +35,7 @@ class ADQuestionCategory(models.Model):
         ('WL', 'Work or Leisure'),
         ('SC', 'Social Capital'),
     )
-    category = models.CharField(choices=choices, max_length=2)
+    category = models.CharField(choices=choices, max_length=2, db_index=True)
 
     def __str__(self):
         return self.category
@@ -43,7 +43,7 @@ class ADQuestionCategory(models.Model):
 
 @python_2_unicode_compatible
 class ADQuestionContext(models.Model):
-    context = models.CharField(max_length=200)
+    context = models.CharField(max_length=200, db_index=True)
 
     def __str__(self):
         return self.context
@@ -76,7 +76,7 @@ class User(models.Model):
     id = models.PositiveIntegerField(primary_key=True)
     talk_posts = models.PositiveIntegerField()
     duration_first_last_talk_days = models.PositiveIntegerField()
-    total_n_classifications = models.PositiveIntegerField()
+    total_n_classifications = models.PositiveIntegerField(db_index=True)
     total_n_sessions = models.PositiveIntegerField()
     total_n_projects = models.PositiveIntegerField()
     total_unique_days = models.PositiveIntegerField()
@@ -113,7 +113,9 @@ class User(models.Model):
         ('Po', 'Poland'),
         ('In', 'Internatinal'),
     )
-    country = models.CharField(choices=country_choices, max_length=2)
+    country = models.CharField(
+        choices=country_choices, max_length=2, db_index=True
+    )
 
     def __str__(self):
         return str(self.id)
@@ -148,7 +150,7 @@ class AnswerOpen(models.Model):
 
 @python_2_unicode_compatible
 class AnswerQuiz(models.Model):
-    score = models.PositiveSmallIntegerField()
+    score = models.PositiveSmallIntegerField(db_index=True)
     percent = models.FloatField()
     maxScore = models.PositiveSmallIntegerField()
     choices = (
@@ -160,7 +162,7 @@ class AnswerQuiz(models.Model):
         (6, 'Confident'),
         (7, 'Very confident'),
     )
-    confidence = models.PositiveSmallIntegerField(choices=choices)
+    confidence = models.PositiveSmallIntegerField(choices=choices, db_index=True)
     answerID = models.OneToOneField(
         Answer,
         on_delete=models.CASCADE,
@@ -176,7 +178,7 @@ class AnswerQuiz(models.Model):
 
 @python_2_unicode_compatible
 class AnswerBool(models.Model):
-    answer = models.BooleanField()
+    answer = models.BooleanField(db_index=True)
     answerID = models.OneToOneField(
         Answer,
         on_delete=models.CASCADE,
@@ -202,7 +204,7 @@ class AnswerAgree(models.Model):
         (6, 'Agree'),
         (7, 'Strongly agree'),
     )
-    answer = models.PositiveSmallIntegerField(choices=choices)
+    answer = models.PositiveSmallIntegerField(choices=choices, db_index=True)
     answerID = models.OneToOneField(
         Answer,
         on_delete=models.CASCADE,
@@ -230,7 +232,7 @@ class AnswerEthnicity(models.Model):
         ('BA', 'Black African'),
         ('A', 'Amerindian'),
     )
-    answer = models.CharField(choices=choices, max_length=2)
+    answer = models.CharField(choices=choices, max_length=2, db_index=True)
     specify = models.CharField(max_length=200, blank=True, null=True)
     answerID = models.OneToOneField(
         Answer,
@@ -251,7 +253,7 @@ class AnswerGender(models.Model):
         ('M', 'Male'),
         ('F', 'Female'),
     )
-    answer = models.CharField(choices=choices, max_length=1)
+    answer = models.CharField(choices=choices, max_length=1, db_index=True)
     answerID = models.OneToOneField(
         Answer,
         on_delete=models.CASCADE,
@@ -279,7 +281,7 @@ class AnswerEducationLevel(models.Model):
         (8, 'Masters Degree or equivalent'),
         (9, 'Doctoral Degree or  equivalent'),
     )
-    answer = models.PositiveSmallIntegerField(choices=choices)
+    answer = models.PositiveSmallIntegerField(choices=choices, db_index=True)
     answerID = models.OneToOneField(
         Answer,
         on_delete=models.CASCADE,
@@ -334,9 +336,9 @@ class Projects(models.Model):
         (35, 'plankton'),
         (36, 'bat_detective'),
     )
-    project = models.PositiveSmallIntegerField(choices=choices)
+    project = models.PositiveSmallIntegerField(choices=choices, db_index=True)
     classifications = models.PositiveIntegerField()
-    home_project = models.BooleanField()
+    home_project = models.BooleanField(db_index=True)
     user = models.ForeignKey(User, on_delete=models.CASCADE)
 
     def __str__(self):
@@ -358,7 +360,7 @@ class SurveyProject(models.Model):
         ('SE', 'Seafloor Explorer'),
         ('SS', 'Snapshot Serengeti'),
     )
-    project = models.CharField(choices=choices, max_length=2)
+    project = models.CharField(choices=choices, max_length=2, db_index=True)
     total_n_classifications = models.PositiveIntegerField()
     project_duration_1_days = models.FloatField()
     project_duration_2_days = models.FloatField()
