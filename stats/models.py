@@ -51,7 +51,7 @@ class ADQuestionContext(models.Model):
 
 @python_2_unicode_compatible
 class Question(models.Model):
-    number = models.PositiveSmallIntegerField(primary_key=True)
+    number = models.PositiveIntegerField(primary_key=True)
     question_text = models.CharField(max_length=200)
     kind = models.ForeignKey(QuestionType, on_delete=models.CASCADE)
     category = models.ForeignKey(
@@ -73,19 +73,19 @@ class Question(models.Model):
 
 @python_2_unicode_compatible
 class User(models.Model):
-    id  = models.PositiveSmallIntegerField(primary_key=True)
-    talk_posts = models.PositiveSmallIntegerField()
-    duration_first_last_talk_days = models.PositiveSmallIntegerField()
-    total_n_classifications = models.PositiveSmallIntegerField()
-    total_n_sessions = models.PositiveSmallIntegerField()
-    total_n_projects = models.PositiveSmallIntegerField()
-    total_unique_days = models.PositiveSmallIntegerField()
+    id = models.PositiveIntegerField(primary_key=True)
+    talk_posts = models.PositiveIntegerField()
+    duration_first_last_talk_days = models.PositiveIntegerField()
+    total_n_classifications = models.PositiveIntegerField()
+    total_n_sessions = models.PositiveIntegerField()
+    total_n_projects = models.PositiveIntegerField()
+    total_unique_days = models.PositiveIntegerField()
     first_classification = models.DateField()
     last_classification = models.DateField()
     duration_first_last_talk_hours = models.FloatField()
     duration_first_last_classification_hours = models.FloatField()
-    min_classifications_per_session = models.PositiveSmallIntegerField()
-    max_classifications_per_session = models.PositiveSmallIntegerField()
+    min_classifications_per_session = models.PositiveIntegerField()
+    max_classifications_per_session = models.PositiveIntegerField()
     median_classifications_per_session = models.FloatField()
     mean_classifications_per_session = models.FloatField()
     mean_duration_classification_hours = models.FloatField()
@@ -98,9 +98,9 @@ class User(models.Model):
     mean_duration_session_last2_hours = models.FloatField()
     mean_duration_classification_first2_hours = models.FloatField()
     mean_duration_classification_last2_hours = models.FloatField()
-    min_number_projects_per_session = models.PositiveSmallIntegerField()
-    max_number_projects_per_session = models.PositiveSmallIntegerField()
-    median_number_projects_per_session = models.PositiveSmallIntegerField()
+    min_number_projects_per_session = models.PositiveIntegerField()
+    max_number_projects_per_session = models.PositiveIntegerField()
+    median_number_projects_per_session = models.PositiveIntegerField()
     mean_number_projects_per_session = models.FloatField()
     country_choices = (
         ('US', 'United States'),
@@ -116,14 +116,21 @@ class User(models.Model):
     country = models.CharField(choices=country_choices, max_length=2)
 
     def __str__(self):
-        return self.id
+        return str(self.id)
 
 
+@python_2_unicode_compatible
 class Answer(models.Model):
     question = models.ForeignKey(Question, on_delete=models.CASCADE)
     user = models.ForeignKey(User, on_delete=models.CASCADE)
 
+    def __str__(self):
+        return 'user: {0}, question: {1}'.format(
+            self.user.id, self.question.number
+        )
 
+
+@python_2_unicode_compatible
 class AnswerOpen(models.Model):
     answer = models.CharField(max_length=200)
     answerID = models.OneToOneField(
@@ -133,7 +140,13 @@ class AnswerOpen(models.Model):
         related_name='answerOpen'
     )
 
+    def __str__(self):
+        return 'user: {0}, question: {1}'.format(
+            self.answerID.user.id, self.answerID.question.number
+        )
 
+
+@python_2_unicode_compatible
 class AnswerQuiz(models.Model):
     score = models.PositiveSmallIntegerField()
     percent = models.FloatField()
@@ -155,7 +168,13 @@ class AnswerQuiz(models.Model):
         related_name='answerQuiz'
     )
 
+    def __str__(self):
+        return 'user: {0}, question: {1}'.format(
+            self.answerID.user.id, self.answerID.question.number
+        )
 
+
+@python_2_unicode_compatible
 class AnswerBool(models.Model):
     answer = models.BooleanField()
     answerID = models.OneToOneField(
@@ -165,7 +184,13 @@ class AnswerBool(models.Model):
         related_name='answerBool'
     )
 
+    def __str__(self):
+        return 'user: {0}, question: {1}'.format(
+            self.answerID.user.id, self.answerID.question.number
+        )
 
+
+@python_2_unicode_compatible
 class AnswerAgree(models.Model):
     choices = (
         (0, 'Perfer not to answer'),
@@ -185,7 +210,13 @@ class AnswerAgree(models.Model):
         related_name='answerAD'
     )
 
+    def __str__(self):
+        return 'user: {0}, question: {1}'.format(
+            self.answerID.user.id, self.answerID.question.number
+        )
 
+
+@python_2_unicode_compatible
 class AnswerEthnicity(models.Model):
     choices = (
         ('W', 'White/Caucasian'),
@@ -208,7 +239,13 @@ class AnswerEthnicity(models.Model):
         related_name='answerEthnicity'
     )
 
+    def __str__(self):
+        return 'user: {0}, question: {1}'.format(
+            self.answerID.user.id, self.answerID.question.number
+        )
 
+
+@python_2_unicode_compatible
 class AnswerGender(models.Model):
     choices = (
         ('M', 'Male'),
@@ -222,9 +259,16 @@ class AnswerGender(models.Model):
         related_name='answerGender'
     )
 
+    def __str__(self):
+        return 'user: {0}, question: {1}'.format(
+            self.answerID.user.id, self.answerID.question.number
+        )
 
+
+@python_2_unicode_compatible
 class AnswerEducationLevel(models.Model):
     choices = (
+        (0, 'Blank'),
         (1, 'No education'),
         (2, 'Primary education'),
         (3, 'Lower secondary education'),
@@ -243,7 +287,13 @@ class AnswerEducationLevel(models.Model):
         related_name='answerEdu'
     )
 
+    def __str__(self):
+        return 'user: {0}, question: {1}'.format(
+            self.answerID.user.id, self.answerID.question.number
+        )
 
+
+@python_2_unicode_compatible
 class Projects(models.Model):
     choices = (
         (0, 'cancer_cells'),
@@ -285,11 +335,15 @@ class Projects(models.Model):
         (36, 'bat_detective'),
     )
     project = models.PositiveSmallIntegerField(choices=choices)
-    classifications = models.PositiveSmallIntegerField()
+    classifications = models.PositiveIntegerField()
     home_project = models.BooleanField()
     user = models.ForeignKey(User, on_delete=models.CASCADE)
 
+    def __str__(self):
+        return 'Project {0} for user {1}'.format(self.project, self.user.id)
 
+
+@python_2_unicode_compatible
 class SurveyProject(models.Model):
     user = models.OneToOneField(
         User,
@@ -305,15 +359,20 @@ class SurveyProject(models.Model):
         ('SS', 'Snapshot Serengeti'),
     )
     project = models.CharField(choices=choices, max_length=2)
-    total_n_classifications = models.PositiveSmallIntegerField()
+    total_n_classifications = models.PositiveIntegerField()
     project_duration_1_days = models.FloatField()
     project_duration_2_days = models.FloatField()
-    total_n_sessions = models.PositiveSmallIntegerField()
-    max_classifications_per_session = models.PositiveSmallIntegerField()
+    total_n_sessions = models.PositiveIntegerField()
+    max_classifications_per_session = models.PositiveIntegerField()
     mean_classifications_per_session = models.FloatField()
     project_duration_hours = models.FloatField()
-    total_n_unique_days = models.PositiveSmallIntegerField()
+    total_n_unique_days = models.PositiveIntegerField()
     mean_duration_session_hours = models.FloatField()
     longest_active_session_hours = models.FloatField()
     longest_inactive_session_hours = models.FloatField()
     mean_duration_classification_hours = models.FloatField()
+
+    def __str__(self):
+        return 'Survey project for user {0}: {1}'.format(
+            self.user.id, self.project
+        )

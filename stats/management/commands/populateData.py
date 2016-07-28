@@ -123,7 +123,7 @@ class Command(BaseCommand):
         u.save()
         return u
 
-    def createProjects(user, values):
+    def createProjects(self, user, values):
         for pdx, p in enumerate(values[1]):
             project_info = {
                 'project': projectLookup[p],
@@ -134,7 +134,7 @@ class Command(BaseCommand):
             projects = Projects(**project_info)
             projects.save()
 
-    def createSurveyProject(user, values):
+    def createSurveyProject(self, user, values):
         survey_info = {'user': user}
         if values[32]:
             survey_info['project'] = 'GZ'
@@ -157,11 +157,11 @@ class Command(BaseCommand):
         survey_info['mean_duration_session_hours'] = values[45]
         survey_info['longest_active_session_hours'] = values[46]
         survey_info['longest_inactive_session_hours'] = values[47]
-        survey_info['median_duration_classification_hours'] = values[48]
+        survey_info['mean_duration_classification_hours'] = values[48]
         surveyProject = SurveyProject(**survey_info)
         surveyProject.save()
 
-    def createAnswer(user, question, answer_info):
+    def createAnswer(self, user, question, answer_info):
         kind = question.kind.kind
         answer = Answer(question=question, user=user)
         answer.save()
@@ -185,7 +185,7 @@ class Command(BaseCommand):
     def handle(self, *args, **options):
         self.populateStatic()
         for rdx, r in enumerate(ws.rows):
-            if rdx > 2:
+            if (rdx > 2) and (rdx < 1918) and (rdx != 146) and (rdx != 401):
                 values = [i.value for i in r]
                 for i in range(len(values)):
                     if (type(values[i]) == unicode) and ('[' in values[i]):
@@ -195,8 +195,8 @@ class Command(BaseCommand):
                             pass
                     if type(values[i]) == long:
                         values[i] = int(values[i])
-                index = rdx + 1
-                user = Users.objects.filter(id__exact=i)
+                index = rdx - 2
+                user = User.objects.filter(id__exact=index)
                 if len(user):
                     user = user[0]
                 else:
@@ -214,7 +214,7 @@ class Command(BaseCommand):
                         'maxScore': 15,
                         'confidence': values[129],
                     }
-                    self.createAnswer(user, self.question[70], ans)
+                    self.createAnswer(user, self.questions[70], ans)
                     # project quiz
                     ans = {
                         'score': values[135],
@@ -222,7 +222,7 @@ class Command(BaseCommand):
                         'maxScore': 15,
                         'confidence': values[137],
                     }
-                    self.createAnswer(user, self.question[71], ans)
+                    self.createAnswer(user, self.questions[71], ans)
                     # ploitics quiz
                     ans = {
                         'score': values[138],
@@ -230,24 +230,24 @@ class Command(BaseCommand):
                         'maxScore': 15,
                         'confidence': values[140],
                     }
-                    self.createAnswer(user, self.question[72], ans)
+                    self.createAnswer(user, self.questions[72], ans)
                     # Gender
                     ans = {
                         'answer': 'M' if values[141] else 'F'
                     }
-                    self.createAnswer(user, self.question[73], ans)
+                    self.createAnswer(user, self.questions[73], ans)
                     # age
                     ans = {'answer': values[142]}
-                    self.createAnswer(user, self.question[74], ans)
+                    self.createAnswer(user, self.questions[74], ans)
                     # Ethnicity
-                    ethnicity = ws_eth['EY{0}'.format(sdx - 1)].value
-                    specify = ws_eth['EZ{0}'.format(sdx - 1)].value
+                    ethnicity = ws_eth['EY{0}'.format(rdx)].value
+                    specify = ws_eth['EZ{0}'.format(rdx)].value
                     ans = {
                         'answer': ethnicityLookup[ethnicity],
                     }
                     if specify != '':
                         ans['specify'] = specify
-                    self.createAnswer(user, self.question[75], ans)
+                    self.createAnswer(user, self.questions[75], ans)
                     for qdx in range(76, 100):
                         question = self.questions[qdx]
                         ans = {'answer': values[qdx + 68]}

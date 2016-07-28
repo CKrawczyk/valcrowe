@@ -637,10 +637,13 @@ projectLookup = {
 
 ethnicityLookup = {
     'White/Caucasian': 'W',
+    'Other (please specify)': 'O',
     'Other': 'O',
     'South Asian': 'SA',
     'East Asian': 'EA',
+    'Mixed (please specify)': 'M',
     'Mixed': 'M',
+    'Hispanic/Latino (of any race)': 'HL',
     'Hispanice/Latino': 'HL',
     'Caribbean': 'C',
     'Middle Eastern': 'ME',
