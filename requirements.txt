@@ -1,5 +1,6 @@
 dj-database-url==0.4.1
 Django==1.9.8
+djangorestframework==3.4.1
 et-xmlfile==1.0.1
 gunicorn==19.6.0
 jdcal==1.2

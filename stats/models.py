@@ -162,7 +162,9 @@ class AnswerQuiz(models.Model):
         (6, 'Confident'),
         (7, 'Very confident'),
     )
-    confidence = models.PositiveSmallIntegerField(choices=choices, db_index=True)
+    confidence = models.PositiveSmallIntegerField(
+        choices=choices, db_index=True
+    )
     answerID = models.OneToOneField(
         Answer,
         on_delete=models.CASCADE,
@@ -339,7 +341,7 @@ class Projects(models.Model):
     project = models.PositiveSmallIntegerField(choices=choices, db_index=True)
     classifications = models.PositiveIntegerField()
     home_project = models.BooleanField(db_index=True)
-    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='project_list')
 
     def __str__(self):
         return 'Project {0} for user {1}'.format(self.project, self.user.id)
