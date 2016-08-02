@@ -1,6 +1,7 @@
 from rest_framework import serializers
 from stats.models import *
-from collections import OrderedDict
+from collections import OrderedDict, Counter
+from answer_lookup import answer_lookup, cast_value
 
 
 class DynamicFieldsModelSerializer(serializers.ModelSerializer):
@@ -56,7 +57,7 @@ class ProjectSerializer(serializers.ModelSerializer):
         fields = ('project', 'classifications', 'home_project')
 
 
-class UserSerializer(DynamicFieldsModelSerializer, serializers.ModelSerializer):  # noqa
+class UserSerializer(DynamicFieldsModelSerializer, serializers.ModelSerializer):
     survey_project = SurveyProjectSerializer()
     project_list = ProjectSerializer(many=True)
     country = serializers.CharField(source='get_country_display')
@@ -93,7 +94,7 @@ class QuestionSerializer(serializers.ModelSerializer):
         Object instance -> Dict of primitive datatypes.
         """
         ret = OrderedDict()
-        fields = [field for field in self.fields.values() if not field.write_only]  # noqa
+        fields = [field for field in self.fields.values() if not field.write_only]
 
         for field in fields:
             try:
@@ -114,6 +115,116 @@ class QuestionSerializer(serializers.ModelSerializer):
         return ret
 
 
+class QuestionCountSerializer(serializers.ModelSerializer):
+    category = QuestionCategoryField(read_only=True)
+    kind = QuestionTypeField(read_only=True)
+    context = QuestionContextField(read_only=True)
+
+    class Meta:
+        model = Question
+
+    def to_representation(self, instance):
+        ret = OrderedDict()
+        fields = [field for field in self.fields.values() if not field.write_only]
+
+        for field in fields:
+            try:
+                attribute = field.get_attribute(instance)
+            except SkipField:
+                continue
+
+            if attribute is not None:
+                represenation = field.to_representation(attribute)
+                if represenation is None:
+                    # Do not seralize empty objects
+                    continue
+                if isinstance(represenation, list) and not represenation:
+                    # Do not serialize empty lists
+                    continue
+                ret[field.field_name] = represenation
+        # add answer counts
+        request_params = self.context['request'].query_params.dict()
+        filter_set = {
+            'question__number': instance.number
+        }
+        for key, value in request_params.iteritems():
+            if key not in self.fields.keys():
+                filter_set[key] = value
+        kind = instance.kind.kind
+        lookup = answer_lookup[kind]
+        ans = Answer.objects.filter(**filter_set)
+        ret['count'] = ans.count()
+        if kind == 'QU':
+            val = ans.values(lookup['location_score'], lookup['location_confidence'])
+            ret['results'] = {
+                'confidence': Counter([lookup['answers'][a[lookup['location_confidence']]] for a in val]),
+                'scores': Counter([a[lookup['location_score']] for a in val]),
+                'linked': Counter(['{0}, {1}'.format(a[lookup['location_score']], lookup['answers'][a[lookup['location_confidence']]]) for a in val])
+            }
+        elif kind == 'OP':
+            val = ans.values(lookup['location'])
+            ret['results'] = Counter([a[lookup['location']] for a in val])
+        else:
+            val = ans.values(lookup['location'])
+            ret['results'] = Counter([lookup['answers'][a[lookup['location']]] for a in val])
+        return ret
+
+
+class QuestionValueSerializer(serializers.ModelSerializer):
+    category = QuestionCategoryField(read_only=True)
+    kind = QuestionTypeField(read_only=True)
+    context = QuestionContextField(read_only=True)
+
+    class Meta:
+        model = Question
+
+    def to_representation(self, instance):
+        ret = OrderedDict()
+        fields = [field for field in self.fields.values() if not field.write_only]
+
+        for field in fields:
+            try:
+                attribute = field.get_attribute(instance)
+            except SkipField:
+                continue
+
+            if attribute is not None:
+                represenation = field.to_representation(attribute)
+                if represenation is None:
+                    # Do not seralize empty objects
+                    continue
+                if isinstance(represenation, list) and not represenation:
+                    # Do not serialize empty lists
+                    continue
+                ret[field.field_name] = represenation
+        # add answer values
+        request_params = self.context['request'].query_params.dict()
+        filter_set = {
+            'question__number': instance.number
+        }
+        for key, value in request_params.iteritems():
+            if key not in self.fields.keys():
+                filter_set[key] = value
+        kind = instance.kind.kind
+        lookup = answer_lookup[kind]
+        ans = Answer.objects.filter(**filter_set)
+        ret['count'] = ans.count()
+        if kind == 'QU':
+            val = ans.values(lookup['location_score'], lookup['location_confidence'])
+            ret['results'] = {
+                'confidence': [lookup['answers'][a[lookup['location_confidence']]] for a in val],
+                'scores': [a[lookup['location_score']] for a in val],
+                'linked': [[a[lookup['location_score']], lookup['answers'][a[lookup['location_confidence']]]] for a in val]
+            }
+        elif kind == 'OP':
+            val = ans.values(lookup['location'])
+            ret['results'] = [cast_value(a[lookup['location']]) for a in val]
+        else:
+            val = ans.values(lookup['location'])
+            ret['results'] = [lookup['answers'][a[lookup['location']]] for a in val]
+        return ret
+
+
 class AnswerEthnicitySerializer(serializers.ModelSerializer):
     class Meta:
         model = AnswerEthnicity
@@ -131,7 +242,7 @@ class AnswerField(serializers.RelatedField):
         return value.answer
 
 
-class AnswerSerializer(DynamicFieldsModelSerializer, serializers.ModelSerializer):  # noqa
+class AnswerSerializer(DynamicFieldsModelSerializer, serializers.ModelSerializer):
     answerOpen = AnswerField(read_only=True)
     answerBool = AnswerField(read_only=True)
     answerAD = AnswerField(read_only=True)
@@ -158,7 +269,7 @@ class AnswerSerializer(DynamicFieldsModelSerializer, serializers.ModelSerializer
             'answerQuiz',
         ]
         ret = OrderedDict()
-        fields = [field for field in self.fields.values() if not field.write_only]  # noqa
+        fields = [field for field in self.fields.values() if not field.write_only]
 
         for field in fields:
             try:

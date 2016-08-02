@@ -7,11 +7,11 @@ router = routers.DefaultRouter()
 router.register(r'users', views.UserViewSet)
 router.register(r'answers', views.AnswerViewSet)
 router.register(r'questions', views.QuestionViewSet)
+router.register(r'counts', views.QuestionCountSet)
+router.register(r'values', views.QuestionValueSet)
 
 urlpatterns = [
     url(r'^', include(router.urls)),
-    url(r'^answer/count/$', views.AnswerCountView.as_view()),
-    url(r'^answer/values/$', views.AnswerValueView.as_view()),
     url(r'^api-auth/',
         include('rest_framework.urls', namespace='rest_framework')
         ),
