@@ -3,6 +3,29 @@ from stats.models import *
 from collections import OrderedDict
 
 
+class DynamicFieldsModelSerializer(serializers.ModelSerializer):
+    '''
+    A ModelSerializer that takes an additional `fields` argument that
+    controls which fields should be displayed.
+    '''
+
+    def __init__(self, *args, **kwargs):
+        super(DynamicFieldsModelSerializer, self).__init__(*args, **kwargs)
+        if not self.context:
+            return
+        fields = self.context['request'].query_params.get('fields')
+        if fields:
+            fields = fields.split(',')
+            # Drop any fields that are not specified in the `fields` argument.
+            allowed = set(fields)
+            existing = set(self.fields.keys())
+            not_to_display = existing - allowed
+
+            if not_to_display != existing:
+                for field_name in not_to_display:
+                    self.fields.pop(field_name)
+
+
 class SurveyProjectSerializer(serializers.ModelSerializer):
     project = serializers.CharField(source='get_project_display')
 
@@ -33,7 +56,7 @@ class ProjectSerializer(serializers.ModelSerializer):
         fields = ('project', 'classifications', 'home_project')
 
 
-class UserSerializer(serializers.ModelSerializer):
+class UserSerializer(DynamicFieldsModelSerializer, serializers.ModelSerializer):  # noqa
     survey_project = SurveyProjectSerializer()
     project_list = ProjectSerializer(many=True)
     country = serializers.CharField(source='get_country_display')
@@ -70,7 +93,7 @@ class QuestionSerializer(serializers.ModelSerializer):
         Object instance -> Dict of primitive datatypes.
         """
         ret = OrderedDict()
-        fields = [field for field in self.fields.values() if not field.write_only]
+        fields = [field for field in self.fields.values() if not field.write_only]  # noqa
 
         for field in fields:
             try:
@@ -108,7 +131,7 @@ class AnswerField(serializers.RelatedField):
         return value.answer
 
 
-class AnswerSerializer(serializers.ModelSerializer):
+class AnswerSerializer(DynamicFieldsModelSerializer, serializers.ModelSerializer):  # noqa
     answerOpen = AnswerField(read_only=True)
     answerBool = AnswerField(read_only=True)
     answerAD = AnswerField(read_only=True)
@@ -135,7 +158,7 @@ class AnswerSerializer(serializers.ModelSerializer):
             'answerQuiz',
         ]
         ret = OrderedDict()
-        fields = [field for field in self.fields.values() if not field.write_only]
+        fields = [field for field in self.fields.values() if not field.write_only]  # noqa
 
         for field in fields:
             try:
