@@ -1,3 +1,11 @@
+from collections import Counter
+from stats.models import *
+import json
+import stats
+static_path = stats.__path__[0]+'/static/'
+with open(static_path+'city_location.json', 'r') as f:
+    map_locations = json.load(f)
+
 answer_lookup = {
     'GN': {
         'location': 'answerGender__answer',
@@ -135,3 +143,55 @@ def cast_value(s):
         return float(s)
     except ValueError:
         return s
+
+
+def get_aggregation(ret, fields, context, instance):
+    request_params = context['request'].query_params.dict()
+    filter_set = {
+        'question__number': instance.number
+    }
+    for key, value in request_params.iteritems():
+        if (key not in fields.keys()) and (key not in ['format', 'ordering']):
+            filter_set[key] = value
+    kind = instance.kind.kind
+    plot_type = instance.plot_type
+    lookup = answer_lookup[kind]
+    ans = Answer.objects.filter(**filter_set)
+    ret['count'] = ans.count()
+    if plot_type == 'P':
+        val = ans.values(lookup['location'])
+        ret['results'] = Counter([lookup['answers'][a[lookup['location']]] for a in val])
+    elif plot_type == 'H':
+        val = ans.values(lookup['location'])
+        ret['results'] = [cast_value(a[lookup['location']]) for a in val]
+    elif plot_type == 'M':
+        val = ans.values(lookup['location'])
+        lat_all = []
+        lon_all = []
+        for a in val:
+            city = a[lookup['location']].lower()
+            if city in map_locations:
+                geo = map_locations[city]
+                lat_all.append(geo['lat'])
+                lon_all.append(geo['lng'])
+        c = Counter(zip(lat_all, lon_all))
+        lat = []
+        lon = []
+        count = []
+        for key, value in c.iteritems():
+            lat.append(key[0])
+            lon.append(key[1])
+            count.append(value)
+        ret['results'] = {
+            'lat': lat,
+            'lon': lon,
+            'count': count,
+        }
+    else:
+        val = ans.values(lookup['location_score'], lookup['location_confidence'])
+        ret['results'] = {
+            'confidence': [a[lookup['location_confidence']] for a in val],
+            'scores': [a[lookup['location_score']] for a in val],
+            'confidence_map': lookup['answers'],
+        }
+    return ret

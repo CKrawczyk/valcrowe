@@ -95,3 +95,4 @@ ENV/
 
 *.xlsx
 *.pdf
+*one_off*.py

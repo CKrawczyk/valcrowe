@@ -34,6 +34,14 @@ class ADQuestionCategory(models.Model):
         ('Co', 'Competitiveness'),
         ('WL', 'Work or Leisure'),
         ('SC', 'Social Capital'),
+        ('Lo', 'Location'),
+        ('Qu', 'Quiz'),
+        ('In', 'Individual'),
+        ('Em', 'Employment'),
+        ('Ed', 'Education'),
+        ('Ti', 'Time'),
+        ('FF', 'Friends and Family'),
+        ('Re', 'Religion'),
     )
     category = models.CharField(choices=choices, max_length=2, db_index=True)
 
@@ -54,6 +62,15 @@ class Question(models.Model):
     number = models.PositiveIntegerField(primary_key=True)
     question_text = models.CharField(max_length=200)
     kind = models.ForeignKey(QuestionType, on_delete=models.CASCADE)
+    plot_choices = (
+        ('H', 'Histogram'),
+        ('P', 'Pie'),
+        ('M', 'Map'),
+        ('Q', 'Quiz'),
+    )
+    plot_type = models.CharField(
+        choices=plot_choices, max_length=1
+    )
     category = models.ForeignKey(
         ADQuestionCategory,
         on_delete=models.CASCADE,

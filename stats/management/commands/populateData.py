@@ -19,7 +19,7 @@ ws = wb['All_VOLCROWE DATA']
 class Command(BaseCommand):
     def populateStatic(self):
         QTList = ['OP', 'QU', 'YN', 'AD', 'GN', 'ET', 'ED']
-        ADList = ['PE', 'Va', 'Ca', 'Un', 'RC', 'So', 'Co', 'WL', 'SC']
+        ADList = ['PE', 'Va', 'Ca', 'Un', 'RC', 'So', 'Co', 'WL', 'SC', 'Lo', 'Qu', 'In', 'Em', 'Ed', 'Ti', 'FF', 'Re']
         self.QT = {}
         self.AD = {}
         self.questions = {}
@@ -52,6 +52,7 @@ class Command(BaseCommand):
                     'number': number,
                     'question_text': q['text'],
                     'kind': self.QT[q['kind']],
+                    'plot_type': q['plot_type'],
                 }
                 if q['context'] is not None:
                     context = ADQuestionContext.objects.filter(

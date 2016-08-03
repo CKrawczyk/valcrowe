@@ -1,7 +1,7 @@
 from rest_framework import serializers
 from stats.models import *
-from collections import OrderedDict, Counter
-from answer_lookup import answer_lookup, cast_value
+from collections import OrderedDict
+from answer_lookup import get_aggregation
 
 
 class DynamicFieldsModelSerializer(serializers.ModelSerializer):
@@ -143,86 +143,7 @@ class QuestionCountSerializer(serializers.ModelSerializer):
                     continue
                 ret[field.field_name] = represenation
         # add answer counts
-        request_params = self.context['request'].query_params.dict()
-        filter_set = {
-            'question__number': instance.number
-        }
-        for key, value in request_params.iteritems():
-            if key not in self.fields.keys():
-                filter_set[key] = value
-        kind = instance.kind.kind
-        lookup = answer_lookup[kind]
-        ans = Answer.objects.filter(**filter_set)
-        ret['count'] = ans.count()
-        if kind == 'QU':
-            val = ans.values(lookup['location_score'], lookup['location_confidence'])
-            ret['results'] = {
-                'confidence': Counter([lookup['answers'][a[lookup['location_confidence']]] for a in val]),
-                'scores': Counter([a[lookup['location_score']] for a in val]),
-                'linked': Counter(['{0}, {1}'.format(a[lookup['location_score']], lookup['answers'][a[lookup['location_confidence']]]) for a in val])
-            }
-        elif kind == 'OP':
-            val = ans.values(lookup['location'])
-            ret['results'] = Counter([a[lookup['location']] for a in val])
-        else:
-            val = ans.values(lookup['location'])
-            ret['results'] = Counter([lookup['answers'][a[lookup['location']]] for a in val])
-        return ret
-
-
-class QuestionValueSerializer(serializers.ModelSerializer):
-    category = QuestionCategoryField(read_only=True)
-    kind = QuestionTypeField(read_only=True)
-    context = QuestionContextField(read_only=True)
-
-    class Meta:
-        model = Question
-
-    def to_representation(self, instance):
-        ret = OrderedDict()
-        fields = [field for field in self.fields.values() if not field.write_only]
-
-        for field in fields:
-            try:
-                attribute = field.get_attribute(instance)
-            except SkipField:
-                continue
-
-            if attribute is not None:
-                represenation = field.to_representation(attribute)
-                if represenation is None:
-                    # Do not seralize empty objects
-                    continue
-                if isinstance(represenation, list) and not represenation:
-                    # Do not serialize empty lists
-                    continue
-                ret[field.field_name] = represenation
-        # add answer values
-        request_params = self.context['request'].query_params.dict()
-        filter_set = {
-            'question__number': instance.number
-        }
-        for key, value in request_params.iteritems():
-            if key not in self.fields.keys():
-                filter_set[key] = value
-        kind = instance.kind.kind
-        lookup = answer_lookup[kind]
-        ans = Answer.objects.filter(**filter_set)
-        ret['count'] = ans.count()
-        if kind == 'QU':
-            val = ans.values(lookup['location_score'], lookup['location_confidence'])
-            ret['results'] = {
-                'confidence': [lookup['answers'][a[lookup['location_confidence']]] for a in val],
-                'scores': [a[lookup['location_score']] for a in val],
-                'linked': [[a[lookup['location_score']], lookup['answers'][a[lookup['location_confidence']]]] for a in val]
-            }
-        elif kind == 'OP':
-            val = ans.values(lookup['location'])
-            ret['results'] = [cast_value(a[lookup['location']]) for a in val]
-        else:
-            val = ans.values(lookup['location'])
-            ret['results'] = [lookup['answers'][a[lookup['location']]] for a in val]
-        return ret
+        return get_aggregation(ret, self.fields, self.context, instance)
 
 
 class AnswerEthnicitySerializer(serializers.ModelSerializer):

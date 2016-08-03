@@ -43,7 +43,7 @@ class QuestionFilter(filters.FilterSet):
 
     class Meta:
         model = Question
-        fields = ['number', 'kind', 'category']
+        fields = ['number', 'kind', 'category', 'plot_type']
 
 
 class QuestionViewSet(viewsets.ReadOnlyModelViewSet):
@@ -56,12 +56,6 @@ class QuestionCountSet(viewsets.ReadOnlyModelViewSet):
     filter_class = QuestionFilter
     queryset = Question.objects.all().order_by('number')
     serializer_class = QuestionCountSerializer
-
-
-class QuestionValueSet(viewsets.ReadOnlyModelViewSet):
-    filter_class = QuestionFilter
-    queryset = Question.objects.all().order_by('number')
-    serializer_class = QuestionValueSerializer
 
 
 class AnswerFilter(filters.FilterSet):
