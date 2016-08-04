@@ -1,5 +1,5 @@
 """
-WSGI config for valcrowe project.
+WSGI config for volcrowe project.
 
 It exposes the WSGI callable as a module-level variable named ``application``.
 
@@ -11,6 +11,6 @@ import os
 
 from django.core.wsgi import get_wsgi_application
 
-os.environ.setdefault("DJANGO_SETTINGS_MODULE", "valcrowe.settings")
+os.environ.setdefault("DJANGO_SETTINGS_MODULE", "volcrowe.settings")
 
 application = get_wsgi_application()

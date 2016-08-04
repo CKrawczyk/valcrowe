@@ -3,7 +3,7 @@ import os
 import json
 import django
 
-os.environ.setdefault("DJANGO_SETTINGS_MODULE", "valcrowe.settings")
+os.environ.setdefault("DJANGO_SETTINGS_MODULE", "volcrowe.settings")
 django.setup()
 from stats.models import Answer # noqa
 
