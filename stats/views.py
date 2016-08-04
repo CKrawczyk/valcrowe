@@ -2,6 +2,7 @@ import rest_framework_filters as filters
 from rest_framework import viewsets
 from stats.models import *
 from stats.serializers import *
+from django.shortcuts import render
 
 
 class SurveyProjectFilter(filters.FilterSet):

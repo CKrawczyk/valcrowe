@@ -96,3 +96,5 @@ ENV/
 *.xlsx
 *.pdf
 *one_off*.py
+node_modules
+assets/bundles
