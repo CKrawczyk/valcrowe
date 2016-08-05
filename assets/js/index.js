@@ -1,10 +1,6 @@
 import React from 'react';
 import ReactDom from 'react-dom';
+import App from './layout';
 
-const App = () => (
-  <div>
-    Hi!
-  </div>
-);
 
 ReactDom.render(<App />, document.getElementById('react-app'));
