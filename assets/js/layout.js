@@ -22,7 +22,9 @@ const App = () => (
           <Tab eventKey={1} title="Location">
             <PlotSet category="Lo" />
           </Tab>
-          <Tab eventKey={2} title="Tab 2">Tab 2 content</Tab>
+          <Tab eventKey={2} title="Quiz">
+            <PlotSet category="Qu" />
+          </Tab>
         </Tabs>
       </Col>
     </Row>

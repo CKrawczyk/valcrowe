@@ -1,12 +1,12 @@
 import React from 'react';
 import getStats from './stats-api';
-import Plotly from 'react-plotlyjs';
+import Plot from './plot';
 
 export default class PlotSet extends React.Component {
   constructor(props) {
     super(props);
     this.getData = this.getData.bind(this);
-    this.getPlot = this.getPlot.bind(this);
+    this.getPlots = this.getPlots.bind(this);
     this.state = {
       data: null,
     };
@@ -27,33 +27,18 @@ export default class PlotSet extends React.Component {
       ));
   }
 
-  getPlot() {
+  getPlots() {
+    const plots = [];
     if (this.state.data !== null) {
-      const data = [];
       for (const result of this.state.data.results) {
-        const datum = {};
-        switch (result.plot_type) {
-          case 'P':
-            datum.type = 'pie';
-            datum.values = [];
-            datum.labels = [];
-            for (const key in result.results) {
-              datum.labels.push(key);
-              datum.values.push(result.results[key]);
-            }
-            break;
-          default:
-            break;
-        }
-        data.push(datum);
+        plots.push(<Plot input={result} key={result.number} />);
       }
-      return <Plotly data={data} />;
     }
-    return <div />;
+    return plots;
   }
 
   render() {
-    const inside = this.getPlot();
+    const inside = this.getPlots();
     return (
       <div>
         {inside}
