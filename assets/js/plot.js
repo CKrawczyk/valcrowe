@@ -1,5 +1,7 @@
 import React from 'react';
 import Plotly from 'react-plotlyjs';
+import { Col } from 'react-bootstrap';
+import Keys from './pieKeys';
 
 export default class Plot extends React.Component {
   constructor(props) {
@@ -16,72 +18,142 @@ export default class Plot extends React.Component {
   }
 
   getPlot() {
+    const size = Math.floor(document.getElementsByName(`result-${this.props.input.number}`)[0].offsetWidth) - 30;
     const data = [];
-    const layout = {};
+    const layout = {
+      width: size,
+      showlegend: false,
+      hovermode: 'closest',
+    };
+    /* eslint no-case-declarations: 0 */
+    /* eslint guard-for-in: 0 */
+    /* eslint no-restricted-syntax: 0 */
     switch (this.props.input.plot_type) {
       case 'P':
-        data.push({});
-        data[0].type = 'pie';
-        data[0].values = [];
-        data[0].labels = [];
+        const labels = [];
+        const values = [];
+        const colors = [];
         for (const key in this.props.input.results) {
-          data[0].labels.push(key);
-          data[0].values.push(this.props.input.results[key]);
+          const KeyTable = Keys[this.props.info.pieType];
+          labels.push(KeyTable[key].text);
+          values.push(this.props.input.results[key]);
+          colors.push(KeyTable[key].color);
         }
+        data.push({
+          type: 'pie',
+          values,
+          labels,
+          textposition: 'inside',
+          marker: {
+            colors,
+          },
+        });
+        layout.height = size;
+        layout.margin = {
+          l: 0,
+          r: 0,
+          b: 30,
+          t: 30,
+          pad: 0,
+        };
         break;
       case 'M':
-        data.push({});
-        data[0].type = 'scattergeo';
-        data[0].lat = this.props.input.results.lat;
-        data[0].lon = this.props.input.results.lon;
-        data[0].marker = {
-          size: this.props.input.results.count,
+        const markerSize = [];
+        for (const count of this.props.input.results.count) {
+          markerSize.push(Math.pow(count, 0.6) + 5);
+        }
+        data.push({
+          type: 'scattergeo',
+          lat: this.props.input.results.lat,
+          lon: this.props.input.results.lon,
+          hoverinfo: 'text',
+          text: this.props.input.results.count,
+          marker: {
+            size: markerSize,
+          },
+        });
+        layout.margin = {
+          l: 0,
+          r: 0,
+          b: 0,
+          t: 0,
+          pad: 0,
+        };
+        layout.geo = {
+          resolution: 30,
+          projection: {
+            type: 'robinson',
+          },
         };
         break;
       case 'H':
-        data.push({});
-        data[0].type = 'histogram';
-        data[0].x = this.props.input.results;
+        const histOptions = this.props.info.options || {};
+        data.push({
+          type: 'histogram',
+          x: this.props.input.results,
+          ...histOptions,
+        });
+        layout.margin = {
+          r: 0,
+          t: 20,
+          pad: 0,
+        };
+        layout.yaxis = {
+          title: 'Number',
+        };
+        layout.xaxis = this.props.info.xaxis || {};
         break;
       case 'Q':
-        data.push({});
-        data[0].type = 'scatter';
-        data[0].mode = 'markers';
-        data[0].x = this.props.input.results.scores;
-        data[0].y = this.props.input.results.confidence;
-        data[0].marker = {
-          opacity: 0.01,
+        data.push({
+          type: 'scatter',
+          mode: 'markers',
+          x: this.props.input.results.scores,
+          y: this.props.input.results.confidence,
+          marker: {
+            opacity: 0.01,
+          },
+        });
+        data.push({
+          type: 'histogram',
+          x: this.props.input.results.scores,
+          yaxis: 'y2',
+        });
+        data.push({
+          type: 'histogram',
+          y: this.props.input.results.confidence,
+          xaxis: 'x2',
+        });
+        layout.margin = {
+          r: 0,
+          t: 0,
+          pad: 0,
         };
-        data.push({});
-        data[1].type = 'histogram';
-        data[1].x = this.props.input.results.scores;
-        data[1].yaxis = 'y2';
-        data.push({});
-        data[2].type = 'histogram';
-        data[2].y = this.props.input.results.confidence;
-        data[2].xaxis = 'x2';
         layout.showlegend = false;
         layout.autosize = false;
         layout.bargap = 0;
         layout.xaxis = {
-          domain: [0, 0.65],
+          domain: [0, 0.8],
           showgrid: false,
           zeroline: false,
+          title: 'Score',
         };
         layout.yaxis = {
-          domain: [0, 0.65],
+          domain: [0, 0.75],
           showgrid: false,
           zeroline: false,
+          title: 'Confidence',
         };
         layout.xaxis2 = {
-          domain: [0.65, 1],
+          domain: [0.8, 1],
           showgrid: false,
           zeroline: false,
+          title: 'Number',
         };
         layout.yaxis2 = {
-          domain: [0.65, 1],
+          domain: [0.75, 1],
           showgrid: false,
           zeroline: false,
+          title: 'Number',
         };
         break;
       default:
@@ -91,14 +163,24 @@ export default class Plot extends React.Component {
   }
 
   render() {
-    let output = <div>Loading...</div>;
+    let output = (
+      <Col xs={this.props.info.xs} name={`result-${this.props.input.number}`}>
+        <div>Loading...</div>
+      </Col>
+    );
     if (this.state.data !== null) {
-      output = <Plotly data={this.state.data} layout={this.state.layout} />;
+      output = (
+        <Col xs={this.props.info.xs} name={`result-${this.props.input.number}`}>
+          <div className="title">{this.props.input.question_text}</div>
+          <Plotly data={this.state.data} layout={this.state.layout} />
+        </Col>
+      );
     }
     return output;
   }
 }
 
 Plot.propTypes = {
+  info: React.PropTypes.object,
   input: React.PropTypes.object,
 };

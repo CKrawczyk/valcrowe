@@ -1,6 +1,9 @@
 import React from 'react';
+import { Row, Col } from 'react-bootstrap';
 import getStats from './stats-api';
 import Plot from './plot';
+import Legend from './legend';
+import plotOrder from './plot_order';
 
 export default class PlotSet extends React.Component {
   constructor(props) {
@@ -16,10 +19,16 @@ export default class PlotSet extends React.Component {
     this.getData();
   }
 
+  componentWillReceiveProps(nextProps) {
+    if (this.props.params.categoryID !== nextProps.params.categoryID) {
+      this.setState({ data: null }, this.getData);
+    }
+  }
+
   getData() {
     const paramSet = {
-      ...this.props.params,
-      category: this.props.category,
+      ...this.props.queryFilter,
+      category: this.props.params.categoryID,
     };
     getStats(paramSet)
       .then((data) => (
@@ -28,10 +37,41 @@ export default class PlotSet extends React.Component {
   }
 
   getPlots() {
+    /* eslint no-case-declarations: 0 */
     const plots = [];
+    let idx = 0;
+    let ldx = 0;
     if (this.state.data !== null) {
-      for (const result of this.state.data.results) {
-        plots.push(<Plot input={result} key={result.number} />);
+      for (const info of plotOrder[this.props.params.categoryID]) {
+        const result = this.state.data.results[info.index];
+        switch (info.type) {
+          case 'plot':
+            plots.push(<Plot input={result} key={result.number} info={info} />);
+            break;
+          case 'Legend':
+            plots.push(<Legend key={`Legend:${ldx}`} xs={info.xs} type={info.legendType} />);
+            ldx += 1;
+            break;
+          case 'context':
+            let hr;
+            let con;
+            if (idx !== 0) {
+              hr = <hr />;
+            }
+            if (result.context) {
+              con = <div className="context">{result.context}</div>;
+            }
+            plots.push(
+              <Col xs={info.xs} key={`Context:${result.number}`}>
+                {hr}
+                {con}
+              </Col>
+            );
+            break;
+          default:
+            break;
+        }
+        idx += 1;
       }
     }
     return plots;
@@ -41,7 +81,9 @@ export default class PlotSet extends React.Component {
     const inside = this.getPlots();
     return (
       <div>
-        {inside}
+        <Row>
+          {inside}
+        </Row>
       </div>
     );
   }
@@ -49,10 +91,9 @@ export default class PlotSet extends React.Component {
 
 PlotSet.propTypes = {
   params: React.PropTypes.object,
-  category: React.PropTypes.string,
+  queryFilter: React.PropTypes.object,
 };
 
 PlotSet.defaultProps = {
-  params: {},
-  category: '',
+  queryFilter: {},
 };

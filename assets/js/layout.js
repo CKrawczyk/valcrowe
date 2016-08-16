@@ -1,8 +1,8 @@
 import React from 'react';
-import { Tab, Tabs, Grid, Row, Col, Well } from 'react-bootstrap';
-import PlotSet from './plotSet';
+import { Grid, Row, Col, Well } from 'react-bootstrap';
+import Tabs from './tabs';
 
-const App = () => (
+const App = (props) => (
   <Grid>
     <Row>
       <Col xs={12}>
@@ -12,23 +12,27 @@ const App = () => (
       </Col>
     </Row>
     <Row>
-      <Col xs={3}>
+      <Col xs={12}>
         <Well>
-          Filter Area
+          Filters go here
         </Well>
       </Col>
-      <Col xs={8}>
-        <Tabs defaultActiveKey={1} animation={false} id="noanim-tab-example">
-          <Tab eventKey={1} title="Location">
-            <PlotSet category="Lo" />
-          </Tab>
-          <Tab eventKey={2} title="Quiz">
-            <PlotSet category="Qu" />
-          </Tab>
-        </Tabs>
+    </Row>
+    <Row>
+      <Col xs={2}>
+        <div className="sidebar">
+          <Tabs />
+        </div>
+      </Col>
+      <Col xs={10}>
+        {props.children}
       </Col>
     </Row>
   </Grid>
 );
+
+App.propTypes = {
+  children: React.PropTypes.node,
+};
 
 export default App;

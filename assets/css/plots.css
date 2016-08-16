@@ -1,0 +1,43 @@
+body {
+  margin: 30px;
+}
+
+.title {
+  text-align: center;
+  height: 3em;
+  margin-top: 2em;
+}
+
+.context {
+  text-align: center;
+  font-size: larger;
+  font-weight: 800;
+}
+
+hr {
+  border-top: 1px solid #aaa;
+}
+
+.nav-tabs.nav-stacked {
+  border-bottom: none;
+  border-right: 1px solid #aaa;
+  padding-top: 2px;
+}
+
+.nav-tabs.nav-stacked>li {
+  margin-bottom: 2px;
+  margin-right: -1px;
+}
+
+.nav-tabs.nav-stacked>li.active>a,
+.nav-tabs.nav-stacked>li.active>a:hover,
+.nav-tabs.nav-stacked>li.active>a:focus {
+  border-color: #aaa;
+  border-right-color: transparent;
+}
+
+.nav-tabs.nav-stacked>li>a {
+  border-radius: 4px 0 0 4px;
+  margin-right: 0;
+  display:block;
+}
