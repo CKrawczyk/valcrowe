@@ -8,6 +8,7 @@ export default class Plot extends React.Component {
   constructor(props) {
     super(props);
     this.getPlot = this.getPlot.bind(this);
+    this.handleResize = this.handleResize.bind(this);
     this.state = {
       data: null,
       layout: null,
@@ -17,13 +18,12 @@ export default class Plot extends React.Component {
   }
 
   componentDidMount() {
-    this.getSizeAndPlot();
+    this.handleResize();
+    window.addEventListener('resize', this.handleResize);
   }
 
-  getSizeAndPlot() {
-    const element = ReactDom.findDOMNode(this);
-    const size = Math.floor(element.offsetWidth) - 30;
-    this.setState({ size }, this.getPlot);
+  componentWillUnmount() {
+    window.removeEventListener('resize', this.handleResize);
   }
 
   getPlot() {
@@ -173,15 +173,23 @@ export default class Plot extends React.Component {
     this.setState({ data, layout, config });
   }
 
+  handleResize() {
+    const element = ReactDom.findDOMNode(this);
+    const size = Math.floor(element.offsetWidth) - 30;
+    if (this.state.size !== size) {
+      this.setState({ size }, this.getPlot);
+    }
+  }
+
   render() {
     let output = (
-      <Col xs={this.props.info.xs} name={`result-${this.props.input.number}`}>
+      <Col {...this.props.info.bs} name={`result-${this.props.input.number}`}>
         <div>Loading...</div>
       </Col>
     );
     if (this.state.data !== null) {
       output = (
-        <Col xs={this.props.info.xs} name={`result-${this.props.input.number}`}>
+        <Col {...this.props.info.bs} name={`result-${this.props.input.number}`}>
           <div className="title">{this.props.input.question_text}</div>
           <Plotly data={this.state.data} layout={this.state.layout} config={this.state.config} />
         </Col>

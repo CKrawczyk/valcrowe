@@ -18,7 +18,7 @@ const pie = (index, pieType = 'AD') => (
   {
     type: 'plot',
     index,
-    xs: 4,
+    bs: { xs: 4 },
     pieType,
   }
 );
@@ -35,7 +35,7 @@ const bar = (index, options = {}, xaxis = {}) => (
   {
     type: 'plot',
     index,
-    xs: 6,
+    bs: { xs: 6 },
     options,
     xaxis,
   }
@@ -63,13 +63,13 @@ export default {
     {
       type: 'plot',
       index: 1,
-      xs: 12,
+      bs: { xs: 12 },
     },
     context(2),
     {
       type: 'plot',
       index: 2,
-      xs: 12,
+      bs: { xs: 12 },
       options: {
         autobinx: false,
         xbins: {
@@ -84,21 +84,21 @@ export default {
     {
       type: 'plot',
       index: 0,
-      xs: 12,
+      bs: { xs: 12 },
       legend: false,
     },
     context(1),
     {
       type: 'plot',
       index: 1,
-      xs: 12,
+      bs: { xs: 12 },
       legend: false,
     },
     context(2),
     {
       type: 'plot',
       index: 2,
-      xs: 12,
+      bs: { xs: 12 },
       legend: false,
     },
   ],
@@ -169,7 +169,7 @@ export default {
     {
       type: 'plot',
       index: 1,
-      xs: 12,
+      bs: { xs: 12 },
       options: {
         autobinx: false,
         xbins: {
@@ -246,7 +246,7 @@ export default {
     {
       type: 'plot',
       index: 3,
-      xs: 12,
+      bs: { xs: 12 },
       xaxis: {
         range: [0, 5000],
       },
@@ -309,6 +309,6 @@ export default {
         xs: 8,
       },
     },
-    legend('AD'),
+    legend('AD', { xs: 4 }),
   ],
 };
