@@ -14,8 +14,27 @@ body {
   font-weight: 800;
 }
 
+.filters__title {
+  text-align: center;
+  font-size: larger;
+  font-weight: 700;
+}
+
+.filter__name {
+  text-align: center;
+}
+
+.form-control {
+  padding: 6px;
+}
+
+.checkbox {
+  margin: 0;
+}
+
 hr {
   border-top: 1px solid #aaa;
+  margin: 0.25em 0;
 }
 
 .nav-tabs.nav-stacked {

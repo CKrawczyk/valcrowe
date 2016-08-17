@@ -6,6 +6,7 @@ from django.shortcuts import render
 
 
 class SurveyProjectFilter(filters.FilterSet):
+    project = filters.AllLookupsFilter(name='project')
     classifications = filters.AllLookupsFilter(name='total_n_classifications')
     sessions = filters.AllLookupsFilter(name='total_n_sessions')
     days = filters.AllLookupsFilter(name='total_n_unique_days')
@@ -24,6 +25,7 @@ class UserFilter(filters.FilterSet):
     classifications = filters.AllLookupsFilter(name='total_n_classifications')
     sessions = filters.AllLookupsFilter(name='total_n_sessions')
     projects = filters.AllLookupsFilter(name='total_n_projects')
+    country = filters.AllLookupsFilter(name='country')
 
     class Meta:
         model = User

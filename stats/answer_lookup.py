@@ -152,7 +152,10 @@ def get_aggregation(ret, fields, context, instance):
     }
     for key, value in request_params.iteritems():
         if (key not in fields.keys()) and (key not in ['format', 'ordering']):
-            filter_set[key] = value
+            if ('__in' in key):
+                filter_set[key] = value.split(',')
+            else:
+                filter_set[key] = value
     kind = instance.kind.kind
     plot_type = instance.plot_type
     lookup = answer_lookup[kind]

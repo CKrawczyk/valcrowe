@@ -21,14 +21,14 @@ export default class PlotSet extends React.Component {
   }
 
   componentWillReceiveProps(nextProps) {
-    if (this.props.params.categoryID !== nextProps.params.categoryID) {
+    if (this.props.params.categoryID !== nextProps.params.categoryID || this.props.query !== nextProps.query) {
       this.setState({ data: null }, this.getData);
     }
   }
 
   getData() {
     const paramSet = {
-      ...this.props.queryFilter,
+      ...this.props.query,
       category: this.props.params.categoryID,
     };
     getStats(paramSet)
@@ -104,7 +104,7 @@ export default class PlotSet extends React.Component {
 
 PlotSet.propTypes = {
   params: React.PropTypes.object,
-  queryFilter: React.PropTypes.object,
+  query: React.PropTypes.object,
 };
 
 PlotSet.defaultProps = {
