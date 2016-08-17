@@ -3,6 +3,7 @@ import ReactDom from 'react-dom';
 import Plotly from 'react-plotlyjs';
 import { Col } from 'react-bootstrap';
 import Keys from './pieKeys';
+import Spinner from 'react-spinkit';
 
 export default class Plot extends React.Component {
   constructor(props) {
@@ -184,7 +185,7 @@ export default class Plot extends React.Component {
   render() {
     let output = (
       <Col {...this.props.info.bs} name={`result-${this.props.input.number}`}>
-        <div>Loading...</div>
+        <Spinner noFadeIn />
       </Col>
     );
     if (this.state.data !== null) {

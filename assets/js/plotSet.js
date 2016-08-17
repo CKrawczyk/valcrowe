@@ -4,6 +4,7 @@ import getStats from './stats-api';
 import Plot from './plot';
 import Legend from './legend';
 import plotOrder from './plot_order';
+import Spinner from 'react-spinkit';
 
 export default class PlotSet extends React.Component {
   constructor(props) {
@@ -38,7 +39,7 @@ export default class PlotSet extends React.Component {
 
   getPlots() {
     /* eslint no-case-declarations: 0 */
-    const plots = [];
+    let plots = [];
     let idx = 0;
     let ldx = 0;
     let bdx = 0;
@@ -79,6 +80,12 @@ export default class PlotSet extends React.Component {
         }
         idx += 1;
       }
+    } else {
+      plots = (
+        <Col xs={2} xsOffset={5}>
+          <Spinner noFadeIn />
+        </Col>
+      );
     }
     return plots;
   }
