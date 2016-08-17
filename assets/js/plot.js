@@ -1,4 +1,5 @@
 import React from 'react';
+import ReactDom from 'react-dom';
 import Plotly from 'react-plotlyjs';
 import { Col } from 'react-bootstrap';
 import Keys from './pieKeys';
@@ -10,20 +11,30 @@ export default class Plot extends React.Component {
     this.state = {
       data: null,
       layout: null,
+      config: null,
+      size: 0,
     };
   }
 
   componentDidMount() {
-    this.getPlot();
+    this.getSizeAndPlot();
+  }
+
+  getSizeAndPlot() {
+    const element = ReactDom.findDOMNode(this);
+    const size = Math.floor(element.offsetWidth) - 30;
+    this.setState({ size }, this.getPlot);
   }
 
   getPlot() {
-    const size = Math.floor(document.getElementsByName(`result-${this.props.input.number}`)[0].offsetWidth) - 30;
     const data = [];
     const layout = {
-      width: size,
+      width: this.state.size,
       showlegend: false,
       hovermode: 'closest',
+    };
+    const config = {
+      displaylogo: false,
     };
     /* eslint no-case-declarations: 0 */
     /* eslint guard-for-in: 0 */
@@ -48,7 +59,7 @@ export default class Plot extends React.Component {
             colors,
           },
         });
-        layout.height = size;
+        layout.height = this.state.size;
         layout.margin = {
           l: 0,
           r: 0,
@@ -159,7 +170,7 @@ export default class Plot extends React.Component {
       default:
         break;
     }
-    this.setState({ data, layout });
+    this.setState({ data, layout, config });
   }
 
   render() {
@@ -172,7 +183,7 @@ export default class Plot extends React.Component {
       output = (
         <Col xs={this.props.info.xs} name={`result-${this.props.input.number}`}>
           <div className="title">{this.props.input.question_text}</div>
-          <Plotly data={this.state.data} layout={this.state.layout} />
+          <Plotly data={this.state.data} layout={this.state.layout} config={this.state.config} />
         </Col>
       );
     }

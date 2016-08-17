@@ -5,7 +5,7 @@ import Keys from './pieKeys';
 
 const pos = {
   2: {
-    x: [1, 2],
+    x: [1.5, 2.5],
     y: [1, 1],
     yrange: [0.5, 1.5],
     height: 22,
@@ -17,7 +17,7 @@ const pos = {
     height: 90,
   },
   10: {
-    x: [0.75, 2.25, 0.75, 2.25, 0.75, 2.25, 0.75, 2.25, 0.75, 2.25],
+    x: [0.5, 2.5, 0.5, 2.5, 0.5, 2.5, 0.5, 2.5, 0.5, 2.5],
     y: [5, 5, 4, 4, 3, 3, 2, 2, 1, 1],
     yrange: [0.5, 5.5],
     height: 112,
@@ -29,9 +29,9 @@ const Legend = (props) => {
   const color = [];
   /* eslint guard-for-in: 0 */
   /* eslint no-restricted-syntax: 0 */
-  for (const key in Keys[props.type]) {
-    text.push(Keys[props.type][key].text.replace(' <br>', ''));
-    color.push(Keys[props.type][key].color);
+  for (const key in Keys[props.info.legendType]) {
+    text.push(Keys[props.info.legendType][key].text.replace(' <br>', ''));
+    color.push(Keys[props.info.legendType][key].color);
   }
   const length = text.length;
   const data = [{
@@ -69,16 +69,18 @@ const Legend = (props) => {
       zeroline: false,
     },
   };
+  const config = {
+    staticPlot: true,
+  };
   return (
-    <Col xs={props.xs}>
-      <Plotly data={data} layout={layout} />
+    <Col {...props.info.bs}>
+      <Plotly data={data} layout={layout} config={config} />
     </Col>
   );
 };
 
 Legend.propTypes = {
-  xs: React.PropTypes.number,
-  type: React.PropTypes.string,
+  info: React.PropTypes.object,
 };
 
 export default Legend;

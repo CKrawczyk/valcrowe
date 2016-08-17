@@ -1,16 +1,16 @@
-const legend = (legendType) => (
+const legend = (legendType, bs = { xs: 12 }) => (
   {
-    type: 'Legend',
-    xs: 12,
+    type: 'legend',
+    bs,
     legendType,
   }
 );
 
-const context = (index) => (
+const context = (index, bs = { xs: 12 }) => (
   {
     type: 'context',
     index,
-    xs: 12,
+    bs,
   }
 );
 
@@ -51,8 +51,14 @@ const barSet = (list, options = {}, xaxis = {}) => {
 
 export default {
   Lo: [
-    legend('TF'),
     pie(0, 'TF'),
+    {
+      type: 'blank',
+      bs: {
+        xs: 8,
+      },
+    },
+    legend('TF', { xs: 4 }),
     context(1),
     {
       type: 'plot',
@@ -174,20 +180,37 @@ export default {
       },
     },
     context(0),
-    legend('Gen'),
     pie(0, 'Gen'),
-    context(2),
-    legend('Eth'),
     pie(2, 'Eth'),
+    {
+      type: 'blank',
+      bs: {
+        xs: 4,
+      },
+    },
+    legend('Gen', { xs: 4 }),
+    legend('Eth', { xs: 4 }),
     context(3),
-    legend('TF'),
     ...pieSet([3, 7], 'TF'),
+    {
+      type: 'blank',
+      bs: {
+        xs: 4,
+      },
+    },
+    legend('TF', { xs: 8 }),
     context(4),
     ...barSet([4, 5, 6], { autobinx: false, xbins: { start: 0, end: 9, size: 1 } }),
   ],
   Em: [
-    legend('TF'),
     pie(0, 'TF'),
+    {
+      type: 'blank',
+      bs: {
+        xs: 8,
+      },
+    },
+    legend('TF', { xs: 4 }),
     context(1),
     {
       type: 'plot',
@@ -239,11 +262,23 @@ export default {
   ],
   Ed: [
     context(0),
-    legend('Edu'),
     ...pieSet([0, 1], 'Edu'),
+    {
+      type: 'blank',
+      bs: {
+        xs: 4,
+      },
+    },
+    legend('Edu', { xs: 8 }),
     context(2),
-    legend('TF'),
     ...pieSet([2, 3], 'TF'),
+    {
+      type: 'blank',
+      bs: {
+        xs: 4,
+      },
+    },
+    legend('TF', { xs: 8 }),
   ],
   Ti: [
     context(0),
@@ -258,10 +293,22 @@ export default {
     bar(2, { autobinx: false, xbins: { start: 0, end: 7000, size: 20 } }, { range: [0, 700] }),
   ],
   Re: [
-    legend('TF'),
     pie(0, 'TF'),
+    {
+      type: 'blank',
+      bs: {
+        xs: 8,
+      },
+    },
+    legend('TF', { xs: 4 }),
     context(1),
-    legend('AD'),
     pie(1),
+    {
+      type: 'blank',
+      bs: {
+        xs: 8,
+      },
+    },
+    legend('AD'),
   ],
 };
