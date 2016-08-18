@@ -71,15 +71,19 @@ export default class Plot extends React.Component {
         break;
       case 'M':
         const markerSize = [];
+        const textString = [];
+        let idx = 0;
         for (const count of this.props.input.results.count) {
           markerSize.push(Math.pow(count, 0.6) + 5);
+          textString.push(`${this.props.input.results.city[idx]}: ${count}`);
+          idx += 1;
         }
         data.push({
           type: 'scattergeo',
           lat: this.props.input.results.lat,
           lon: this.props.input.results.lon,
           hoverinfo: 'text',
-          text: this.props.input.results.count,
+          text: textString,
           marker: {
             size: markerSize,
           },

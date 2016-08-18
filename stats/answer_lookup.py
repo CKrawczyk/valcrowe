@@ -171,23 +171,28 @@ def get_aggregation(ret, fields, context, instance):
         val = ans.values(lookup['location'])
         lat_all = []
         lon_all = []
+        city_all = []
         for a in val:
             city = a[lookup['location']].lower()
             if city in map_locations:
                 geo = map_locations[city]
                 lat_all.append(geo['lat'])
                 lon_all.append(geo['lng'])
-        c = Counter(zip(lat_all, lon_all))
+                city_all.append(city)
+        c = Counter(zip(lat_all, lon_all, city_all))
         lat = []
         lon = []
+        city = []
         count = []
         for key, value in c.iteritems():
             lat.append(key[0])
             lon.append(key[1])
+            city.append(key[2])
             count.append(value)
         ret['results'] = {
             'lat': lat,
             'lon': lon,
+            'city': city,
             'count': count,
         }
     else:
