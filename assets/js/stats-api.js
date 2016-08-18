@@ -8,8 +8,8 @@ function jsonToURI(obj) {
   )).join('&');
 }
 
-export default function getStats(params) {
-  const url = `${BASE_URL}?${jsonToURI(params)}`;
+export default function getStats(params, base = '') {
+  const url = `${BASE_URL}${base}?${jsonToURI(params)}`;
   const header = {
     method: 'GET',
     headers: {

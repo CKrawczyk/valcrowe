@@ -2,14 +2,17 @@ import React from 'react';
 import { Grid, Row, Col, Well } from 'react-bootstrap';
 import Tabs from './tabs';
 import Filters from './filters';
-
+import getStats from './stats-api';
 
 export default class App extends React.Component {
   constructor(props) {
     super(props);
-    this.handleFilterChange = this.handleFilterChange.bind(this);
     this.getQuery = this.getQuery.bind(this);
+    this.handleFilterChange = this.handleFilterChange.bind(this);
+    this.handleSubmit = this.handleSubmit.bind(this);
     this.state = {
+      query: {},
+      count: 1913,
       userFilter: {
         user__total_n_classifications__gte: '',
         user__total_n_classifications__lte: '',
@@ -99,6 +102,17 @@ export default class App extends React.Component {
     }
   }
 
+  handleSubmit() {
+    const query = this.getQuery();
+    getStats(query, '1')
+      .then((data) => (
+        this.setState({
+          count: data.count,
+          query,
+        })
+      ));
+  }
+
   render() {
     return (
       <Grid>
@@ -110,7 +124,7 @@ export default class App extends React.Component {
           </Col>
         </Row>
         <Row>
-          <Filters handleChange={this.handleFilterChange} filterState={this.state.userFilter} />
+          <Filters handleChange={this.handleFilterChange} filterState={this.state.userFilter} onSubmit={this.handleSubmit} count={this.state.count} />
         </Row>
         <Row>
           <Col xs={2}>
@@ -119,7 +133,7 @@ export default class App extends React.Component {
             </div>
           </Col>
           <Col xs={10}>
-            {React.cloneElement(this.props.children, { query: this.getQuery() })}
+            {React.cloneElement(this.props.children, { query: this.state.query })}
           </Col>
         </Row>
       </Grid>

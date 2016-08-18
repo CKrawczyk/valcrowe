@@ -1,5 +1,5 @@
 import React from 'react';
-import { Grid, Row, Col, Well, FormControl, Checkbox } from 'react-bootstrap';
+import { Row, Col, Well, FormControl, Checkbox, Button } from 'react-bootstrap';
 
 const GtLtFilter = (props) => (
   <Col {...props.bs} className="filter">
@@ -112,8 +112,21 @@ const Filters = (props) => (
         <CheckboxFilter {...props} query="user__survey_project__project__in" text="Survey Project" options={surveyProject} bs={{ xs: 4 }} />
         <CheckboxFilter {...props} query="user__country__in" text="Country" options={country} bs={{ xs: 4 }} />
       </Row>
+      <Row>
+        <Col xs={4}>
+          Showing {props.count} out of 1913 responses
+        </Col>
+        <Col xs={4}>
+          <Button block onClick={props.onSubmit}>Apply filters</Button>
+        </Col>
+      </Row>
     </Well>
   </Col>
 );
+
+Filters.propTypes = {
+  onSubmit: React.PropTypes.func,
+  count: React.PropTypes.number,
+};
 
 export default Filters;
