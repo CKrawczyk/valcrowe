@@ -1,5 +1,5 @@
 import React from 'react';
-import { Row, Col, Well, FormControl, Checkbox, Button } from 'react-bootstrap';
+import { Row, Col, Well, FormControl, Checkbox, Button, Collapse, Glyphicon } from 'react-bootstrap';
 
 const GtLtFilter = (props) => (
   <Col {...props.bs} className="filter">
@@ -10,7 +10,7 @@ const GtLtFilter = (props) => (
       </Col>
     </Row>
     <Row>
-      <Col xs={6}>
+      <Col xs={6} className="input__min">
         <FormControl
           type="number"
           name={`${props.query}__gte`}
@@ -19,7 +19,7 @@ const GtLtFilter = (props) => (
           placeholder="Min"
         />
       </Col>
-      <Col xs={6}>
+      <Col xs={6} className="input__max">
         <FormControl
           type="number"
           name={`${props.query}__lte`}
@@ -100,33 +100,58 @@ const country = {
   In: 'Internatinal',
 };
 
-const Filters = (props) => (
-  <Col xs={12}>
-    <Well bsSize="small">
-      <Row>
-        <Col xs={12} className="filters__title">
-          User filters:
-        </Col>
-        <GtLtFilter {...props} query="user__total_n_classifications" text="Classification Count" bs={{ xs: 2 }} />
-        <GtLtFilter {...props} query="user__talk_posts" text="Talk Post" bs={{ xs: 2 }} />
-        <CheckboxFilter {...props} query="user__survey_project__project__in" text="Survey Project" options={surveyProject} bs={{ xs: 4 }} />
-        <CheckboxFilter {...props} query="user__country__in" text="Country" options={country} bs={{ xs: 4 }} />
-      </Row>
-      <Row>
-        <Col xs={4}>
-          Showing {props.count} out of 1913 responses
-        </Col>
-        <Col xs={4}>
-          <Button block onClick={props.onSubmit}>Apply filters</Button>
-        </Col>
-      </Row>
-    </Well>
-  </Col>
-);
+const Filters = (props) => {
+  let showHide = 'Show';
+  let icon = <Glyphicon glyph="chevron-down" />;
+  if (props.open) {
+    showHide = 'Hide';
+    icon = <Glyphicon glyph="chevron-up" />;
+  }
+  return (
+    <Col xs={12}>
+      <Well bsSize="small">
+        <Row>
+          <Col xs={2}>
+            <Button block onClick={props.toggleOpen} bsSize="xsmall">{showHide} filters {icon}</Button>
+          </Col>
+          <Col xs={8} className="filters__count">
+            Showing {props.count} out of 1913 responses
+          </Col>
+        </Row>
+        <Collapse in={props.open}>
+          <div>
+            <Row>
+              <Col xs={12} className="filters__title">
+                User filters:
+              </Col>
+              <Col xs={4}>
+                <Row>
+                  <GtLtFilter {...props} query="user__total_n_classifications" text="Classification Count" bs={{ xs: 12 }} />
+                </Row>
+                <Row>
+                  <GtLtFilter {...props} query="user__talk_posts" text="Talk Post" bs={{ xs: 12 }} />
+                </Row>
+              </Col>
+              <CheckboxFilter {...props} query="user__survey_project__project__in" text="Survey Project" options={surveyProject} bs={{ xs: 4 }} />
+              <CheckboxFilter {...props} query="user__country__in" text="Country" options={country} bs={{ xs: 4 }} />
+            </Row>
+            <Row>
+              <Col xs={4} xsOffset={4}>
+                <Button block onClick={props.onSubmit}>Apply filters</Button>
+              </Col>
+            </Row>
+          </div>
+        </Collapse>
+      </Well>
+    </Col>
+  );
+}
 
 Filters.propTypes = {
   onSubmit: React.PropTypes.func,
+  toggleOpen: React.PropTypes.func,
   count: React.PropTypes.number,
+  open: React.PropTypes.bool,
 };
 
 export default Filters;

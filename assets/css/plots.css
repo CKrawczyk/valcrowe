@@ -20,12 +20,25 @@ body {
   font-weight: 700;
 }
 
+.filters__count {
+  text-align: center;
+  font-weight: 700;
+}
+
 .filter__name {
   text-align: center;
 }
 
 .form-control {
   padding: 6px;
+}
+
+.input__min {
+  padding-right: 2px;
+}
+
+.input__max {
+  padding-left: 2px;
 }
 
 .checkbox {

@@ -192,9 +192,11 @@ def get_aggregation(ret, fields, context, instance):
         }
     else:
         val = ans.values(lookup['location_score'], lookup['location_confidence'])
+        count = Counter(['{0}, {1}'.format(a[lookup['location_score']], a[lookup['location_confidence']]) for a in val])
         ret['results'] = {
             'confidence': [a[lookup['location_confidence']] for a in val],
             'scores': [a[lookup['location_score']] for a in val],
             'confidence_map': lookup['answers'],
+            'count': count,
         }
     return ret

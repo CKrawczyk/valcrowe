@@ -1,7 +1,6 @@
 import React from 'react';
 import { Grid, Row, Col, Well } from 'react-bootstrap';
 import Tabs from './tabs';
-import Filters from './filters';
 import getStats from './stats-api';
 
 export default class App extends React.Component {
@@ -10,7 +9,9 @@ export default class App extends React.Component {
     this.getQuery = this.getQuery.bind(this);
     this.handleFilterChange = this.handleFilterChange.bind(this);
     this.handleSubmit = this.handleSubmit.bind(this);
+    this.toggleOpen = this.toggleOpen.bind(this);
     this.state = {
+      open: false,
       query: {},
       count: 1913,
       userFilter: {
@@ -113,7 +114,19 @@ export default class App extends React.Component {
       ));
   }
 
+  toggleOpen() {
+    this.setState({ open: !this.state.open });
+  }
+
   render() {
+    const filterProps = {
+      open: this.state.open,
+      toggleOpen: this.toggleOpen,
+      handleChange: this.handleFilterChange,
+      filterState: this.state.userFilter,
+      onSubmit: this.handleSubmit,
+      count: this.state.count,
+    };
     return (
       <Grid>
         <Row>
@@ -124,16 +137,13 @@ export default class App extends React.Component {
           </Col>
         </Row>
         <Row>
-          <Filters handleChange={this.handleFilterChange} filterState={this.state.userFilter} onSubmit={this.handleSubmit} count={this.state.count} />
-        </Row>
-        <Row>
           <Col xs={2}>
             <div className="sidebar">
               <Tabs />
             </div>
           </Col>
           <Col xs={10}>
-            {React.cloneElement(this.props.children, { query: this.state.query })}
+            {React.cloneElement(this.props.children, { query: this.state.query, filterProps })}
           </Col>
         </Row>
       </Grid>

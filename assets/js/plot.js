@@ -116,24 +116,52 @@ export default class Plot extends React.Component {
         layout.xaxis = this.props.info.xaxis || {};
         break;
       case 'Q':
+        const x = [];
+        const y = [];
+        const text = [];
+        const size = [];
+        for (const key in this.props.input.results.count) {
+          const k = key.split(',');
+          x.push(k[0]);
+          y.push(k[1]);
+          text.push(`(${k[0]}, ${k[1]}): ${this.props.input.results.count[key]}`);
+          size.push(Math.pow(this.props.input.results.count[key], 0.7) + 10);
+        }
         data.push({
           type: 'scatter',
           mode: 'markers',
-          x: this.props.input.results.scores,
-          y: this.props.input.results.confidence,
+          x,
+          y,
+          text,
+          hoverinfo: 'text',
           marker: {
-            opacity: 0.01,
+            size,
+            opacity: 0.7,
           },
         });
         data.push({
           type: 'histogram',
           x: this.props.input.results.scores,
+          hoverinfo: 'x+y',
           yaxis: 'y2',
+          autobinx: false,
+          xbins: {
+            start: -0.5,
+            end: 15.5,
+            size: 1,
+          },
         });
         data.push({
           type: 'histogram',
           y: this.props.input.results.confidence,
+          hoverinfo: 'y+x',
           xaxis: 'x2',
+          autobiny: false,
+          ybins: {
+            start: 0.5,
+            end: 7.5,
+            size: 1,
+          },
         });
         layout.margin = {
           r: 0,
@@ -145,12 +173,15 @@ export default class Plot extends React.Component {
         layout.bargap = 0;
         layout.xaxis = {
           domain: [0, 0.8],
+          range: [-0.5, 15.5],
           showgrid: false,
           zeroline: false,
           title: 'Score',
+          dtick: 1,
         };
         layout.yaxis = {
           domain: [0, 0.75],
+          range: [0.5, 7.5],
           showgrid: false,
           zeroline: false,
           title: 'Confidence',

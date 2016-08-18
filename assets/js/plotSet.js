@@ -5,6 +5,7 @@ import Plot from './plot';
 import Legend from './legend';
 import plotOrder from './plot_order';
 import Spinner from 'react-spinkit';
+import Filters from './filters';
 
 export default class PlotSet extends React.Component {
   constructor(props) {
@@ -95,6 +96,9 @@ export default class PlotSet extends React.Component {
     return (
       <div>
         <Row>
+          <Filters {...this.props.filterProps} />
+        </Row>
+        <Row>
           {inside}
         </Row>
       </div>
@@ -105,8 +109,5 @@ export default class PlotSet extends React.Component {
 PlotSet.propTypes = {
   params: React.PropTypes.object,
   query: React.PropTypes.object,
-};
-
-PlotSet.defaultProps = {
-  queryFilter: {},
+  filterProps: React.PropTypes.object,
 };

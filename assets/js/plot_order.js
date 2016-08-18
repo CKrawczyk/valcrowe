@@ -73,8 +73,8 @@ export default {
       options: {
         autobinx: false,
         xbins: {
-          start: 0,
-          end: 90,
+          start: -0.5,
+          end: 90.5,
           size: 1,
         },
       },
@@ -161,7 +161,7 @@ export default {
     context(12),
     ...pieSet([12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23]),
     context(24),
-    ...barSet([24, 25], { autobinx: false, xbins: { start: 0, end: 1000, size: 1 } }, { range: [0, 17] }),
+    ...barSet([24, 25], { autobinx: false, xbins: { start: -0.5, end: 1000.5, size: 1 } }, { range: [0, 17] }),
     context(26),
     ...pieSet([26, 27, 28, 29]),
   ],
@@ -173,8 +173,8 @@ export default {
       options: {
         autobinx: false,
         xbins: {
-          start: 15,
-          end: 90,
+          start: 15.5,
+          end: 90.5,
           size: 1,
         },
       },
@@ -200,7 +200,7 @@ export default {
     },
     legend('TF', { xs: 8 }),
     context(4),
-    ...barSet([4, 5, 6], { autobinx: false, xbins: { start: 0, end: 9, size: 1 } }),
+    ...barSet([4, 5, 6], { autobinx: false, xbins: { start: -0.5, end: 9.5, size: 1 } }),
   ],
   Em: [
     pie(0, 'TF'),
@@ -219,8 +219,8 @@ export default {
       options: {
         autobinx: false,
         xbins: {
-          start: 0,
-          end: 90,
+          start: -0.5,
+          end: 90.5,
           size: 1,
         },
       },
@@ -282,15 +282,15 @@ export default {
   ],
   Ti: [
     context(0),
-    ...barSet([0, 1], { autobinx: false, xbins: { start: 0, end: 500, size: 1 } }, { range: [0, 22] }),
+    ...barSet([0, 1], { autobinx: false, xbins: { start: -0.5, end: 500.5, size: 1 } }, { range: [0, 22] }),
     context(2),
     ...barSet([2, 3, 4, 5], { autobinx: false, xbins: { start: 0, end: 1.1, size: 0.05 } }, { title: 'Fraction of total time' }),
   ],
   FF: [
     context(0),
-    ...barSet([0, 1], { autobinx: false, xbins: { start: 0, end: 5000, size: 1 } }, { range: [0, 55] }),
+    ...barSet([0, 1], { autobinx: false, xbins: { start: -0.5, end: 5000.5, size: 1 } }, { range: [0, 55] }),
     context(2),
-    bar(2, { autobinx: false, xbins: { start: 0, end: 7000, size: 20 } }, { range: [0, 700] }),
+    bar(2, { autobinx: false, xbins: { start: 0, end: 7000, size: 10 } }, { range: [0, 450] }),
   ],
   Re: [
     pie(0, 'TF'),
