@@ -4,7 +4,6 @@ import getStats from './stats-api';
 import Plot from './plot';
 import Legend from './legend';
 import plotOrder from './plot_order';
-import Spinner from 'react-spinkit';
 import Filters from './filters';
 
 export default class PlotSet extends React.Component {
@@ -14,7 +13,7 @@ export default class PlotSet extends React.Component {
     this.getPlots = this.getPlots.bind(this);
     this.state = {
       data: null,
-      plots: this.getSpinner(),
+      plots: null,
       kdx: 0,
     };
   }
@@ -34,10 +33,12 @@ export default class PlotSet extends React.Component {
       ...this.props.query,
       category: this.props.params.categoryID,
     };
-    getStats(paramSet)
-      .then((data) => (
-        this.setState({ data }, this.getPlots)
-      ));
+    this.props.toggleBusy(() => {
+      getStats(paramSet)
+        .then((data) => (
+          this.setState({ data }, this.getPlots)
+        ));
+    });
   }
 
   getPlots() {
@@ -82,15 +83,7 @@ export default class PlotSet extends React.Component {
       }
       idx += 1;
     }
-    this.setState({ plots, kdx: this.state.kdx + 1 });
-  }
-
-  getSpinner() {
-    return (
-      <Col xs={2} xsOffset={5}>
-        <Spinner noFadeIn />
-      </Col>
-    );
+    this.setState({ plots, kdx: this.state.kdx + 1 }, this.props.toggleBusy);
   }
 
   render() {
@@ -111,4 +104,5 @@ PlotSet.propTypes = {
   params: React.PropTypes.object,
   query: React.PropTypes.object,
   filterProps: React.PropTypes.object,
+  toggleBusy: React.PropTypes.func,
 };

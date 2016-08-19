@@ -10,10 +10,12 @@ export default class App extends React.Component {
     this.handleFilterChange = this.handleFilterChange.bind(this);
     this.handleSubmit = this.handleSubmit.bind(this);
     this.toggleOpen = this.toggleOpen.bind(this);
+    this.toggleBusy = this.toggleBusy.bind(this);
     this.state = {
       open: false,
       query: {},
       count: 1913,
+      busy: false,
       userFilter: {
         user__total_n_classifications__gte: '',
         user__total_n_classifications__lte: '',
@@ -43,6 +45,8 @@ export default class App extends React.Component {
 
   getQuery() {
     const surveyProject = [];
+    /* eslint guard-for-in: 0 */
+    /* eslint no-restricted-syntax: 0 */
     for (const key in this.state.userFilter.user__survey_project__project__in) {
       if (this.state.userFilter.user__survey_project__project__in[key]) {
         surveyProject.push(key);
@@ -114,6 +118,10 @@ export default class App extends React.Component {
       ));
   }
 
+  toggleBusy(callback) {
+    this.setState({ busy: !this.state.busy }, callback);
+  }
+
   toggleOpen() {
     this.setState({ open: !this.state.open });
   }
@@ -126,6 +134,7 @@ export default class App extends React.Component {
       filterState: this.state.userFilter,
       onSubmit: this.handleSubmit,
       count: this.state.count,
+      busy: this.state.busy,
     };
     return (
       <Grid>
@@ -143,7 +152,7 @@ export default class App extends React.Component {
             </div>
           </Col>
           <Col xs={10}>
-            {React.cloneElement(this.props.children, { query: this.state.query, filterProps })}
+            {React.cloneElement(this.props.children, { query: this.state.query, filterProps, toggleBusy: this.toggleBusy })}
           </Col>
         </Row>
       </Grid>

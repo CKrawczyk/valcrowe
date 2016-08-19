@@ -1,5 +1,6 @@
 import React from 'react';
 import { Row, Col, Well, FormControl, Checkbox, Button, Collapse, Glyphicon } from 'react-bootstrap';
+import Spinner from 'react-spinkit';
 
 const GtLtFilter = (props) => (
   <Col {...props.bs} className="filter">
@@ -42,6 +43,8 @@ GtLtFilter.propTypes = {
 
 const CheckboxFilter = (props) => {
   const options = [];
+  /* eslint guard-for-in: 0 */
+  /* eslint no-restricted-syntax: 0 */
   for (const key in props.options) {
     const value = props.filterState[props.query][key];
     options.push(
@@ -107,6 +110,10 @@ const Filters = (props) => {
     showHide = 'Hide';
     icon = <Glyphicon glyph="chevron-up" />;
   }
+  let inner = <Spinner noFadeIn />;
+  if (!props.busy) {
+    inner = `Showing ${props.count} out of 1913 responses`;
+  }
   return (
     <Col xs={12}>
       <Well bsSize="small">
@@ -115,7 +122,7 @@ const Filters = (props) => {
             <Button block onClick={props.toggleOpen} bsSize="xsmall">{showHide} filters {icon}</Button>
           </Col>
           <Col xs={8} className="filters__count">
-            Showing {props.count} out of 1913 responses
+            {inner}
           </Col>
         </Row>
         <Collapse in={props.open}>
@@ -145,13 +152,14 @@ const Filters = (props) => {
       </Well>
     </Col>
   );
-}
+};
 
 Filters.propTypes = {
   onSubmit: React.PropTypes.func,
   toggleOpen: React.PropTypes.func,
   count: React.PropTypes.number,
   open: React.PropTypes.bool,
+  busy: React.PropTypes.bool,
 };
 
 export default Filters;
