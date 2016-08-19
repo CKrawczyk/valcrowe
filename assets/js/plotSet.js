@@ -14,6 +14,8 @@ export default class PlotSet extends React.Component {
     this.getPlots = this.getPlots.bind(this);
     this.state = {
       data: null,
+      plots: this.getSpinner(),
+      kdx: 0,
     };
   }
 
@@ -34,72 +36,71 @@ export default class PlotSet extends React.Component {
     };
     getStats(paramSet)
       .then((data) => (
-        this.setState({ data })
+        this.setState({ data }, this.getPlots)
       ));
   }
 
   getPlots() {
     /* eslint no-case-declarations: 0 */
-    let plots = [];
+    const plots = [];
     let idx = 0;
     let ldx = 0;
     let bdx = 0;
-    if (this.state.data !== null) {
-      for (const info of plotOrder[this.props.params.categoryID]) {
-        const result = this.state.data.results[info.index];
-        switch (info.type) {
-          case 'plot':
-            plots.push(<Plot input={result} key={result.number} info={info} />);
-            break;
-          case 'legend':
-            plots.push(<Legend key={`Legend:${ldx}`} info={info} />);
-            ldx += 1;
-            break;
-          case 'blank':
-            plots.push(<Col key={`Blank:${bdx}`} {...info.bs} />);
-            plots.push(<Clearfix key={`Clear:${bdx}`} />);
-            bdx += 1;
-            break;
-          case 'context':
-            let hr;
-            let con;
-            if (idx !== 0) {
-              hr = <hr />;
-            }
-            if (result.context) {
-              con = <div className="context">{result.context}</div>;
-            }
-            plots.push(
-              <Col {...info.bs} key={`Context:${result.number}`}>
-                {hr}
-                {con}
-              </Col>
-            );
-            break;
-          default:
-            break;
-        }
-        idx += 1;
+    for (const info of plotOrder[this.props.params.categoryID]) {
+      const result = this.state.data.results[info.index];
+      switch (info.type) {
+        case 'plot':
+          plots.push(<Plot input={result} key={`${this.state.kdx}:${result.number}`} info={info} />);
+          break;
+        case 'legend':
+          plots.push(<Legend key={`${this.state.kdx}:Legend:${ldx}`} info={info} />);
+          ldx += 1;
+          break;
+        case 'blank':
+          plots.push(<Col key={`${this.state.kdx}:Blank:${bdx}`} {...info.bs} />);
+          plots.push(<Clearfix key={`${this.state.kdx}:Clear:${bdx}`} />);
+          bdx += 1;
+          break;
+        case 'context':
+          let hr;
+          let con;
+          if (idx !== 0) {
+            hr = <hr />;
+          }
+          if (result.context) {
+            con = <div className="context">{result.context}</div>;
+          }
+          plots.push(
+            <Col {...info.bs} key={`${this.state.kdx}:Context:${result.number}`}>
+              {hr}
+              {con}
+            </Col>
+          );
+          break;
+        default:
+          break;
       }
-    } else {
-      plots = (
-        <Col xs={2} xsOffset={5}>
-          <Spinner noFadeIn />
-        </Col>
-      );
+      idx += 1;
     }
-    return plots;
+    this.setState({ plots, kdx: this.state.kdx + 1 });
+  }
+
+  getSpinner() {
+    return (
+      <Col xs={2} xsOffset={5}>
+        <Spinner noFadeIn />
+      </Col>
+    );
   }
 
   render() {
-    const inside = this.getPlots();
     return (
       <div>
         <Row>
           <Filters {...this.props.filterProps} />
         </Row>
         <Row>
-          {inside}
+          {this.state.plots}
         </Row>
       </div>
     );

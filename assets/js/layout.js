@@ -105,7 +105,7 @@ export default class App extends React.Component {
 
   handleSubmit() {
     const query = this.getQuery();
-    getStats(query, '1')
+    getStats(query, '1/')
       .then((data) => (
         this.setState({
           count: data.count,
