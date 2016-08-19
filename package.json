@@ -8,7 +8,7 @@
     "build": "webpack --config webpack.config.js",
     "watch": "webpack --config webpack.config.js --watch",
     "serve": "python manage.py runserver",
-    "dev": "concurrently --kill-others \"npm run serve\" \"npm run watch\""
+    "dev": "export NODE_ENV=development; concurrently --kill-others \"npm run serve\" \"npm run watch\""
   },
   "repository": {
     "type": "git",
