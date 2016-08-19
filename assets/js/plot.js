@@ -88,6 +88,7 @@ export default class Plot extends React.Component {
             size: markerSize,
           },
         });
+        layout.height = 0.5 * this.state.size - 15;
         layout.margin = {
           l: 0,
           r: 0,

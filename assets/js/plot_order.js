@@ -53,18 +53,11 @@ export default {
   Lo: [
     pie(0, 'TF'),
     {
-      type: 'blank',
-      bs: {
-        xs: 8,
-      },
-    },
-    legend('TF', { xs: 4 }),
-    context(1),
-    {
       type: 'plot',
       index: 1,
-      bs: { xs: 12 },
+      bs: { xs: 8 },
     },
+    legend('TF', { xs: 4 }),
     context(2),
     {
       type: 'plot',
