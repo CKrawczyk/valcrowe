@@ -24,9 +24,21 @@ PROJECT_ROOT = os.path.dirname(os.path.abspath(__file__))
 if os.environ['NODE_ENV'] == 'production':
     SECRET_KEY = os.environ['SECRET_KEY']
     DEBUG = False
+    WEBPACK_LOADER = {
+        'DEFAULT': {
+            'BUNDLE_DIR_NAME': 'dist/',
+            'STATS_FILE': os.path.join(BASE_DIR, 'webpack-stats-prod.json'),
+        }
+    }
 else:
     SECRET_KEY = '!ms92^&o^fvchf@06==@kr96t2h^hr*-j3v9s4q&3&t(==jq(f'
     DEBUG = True
+    WEBPACK_LOADER = {
+        'DEFAULT': {
+            'BUNDLE_DIR_NAME': 'bundles/',
+            'STATS_FILE': os.path.join(BASE_DIR, 'webpack-stats.json'),
+        }
+    }
 
 ALLOWED_HOSTS = []
 
@@ -130,13 +142,6 @@ SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
 
 # Allow all host headers
 ALLOWED_HOSTS = ['*']
-
-WEBPACK_LOADER = {
-    'DEFAULT': {
-        'BUNDLE_DIR_NAME': 'bundles/',
-        'STATS_FILE': os.path.join(BASE_DIR, 'webpack-stats.json'),
-    }
-}
 
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/1.9/howto/static-files/
