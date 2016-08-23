@@ -14,6 +14,39 @@ body {
   font-weight: 800;
 }
 
+.plots {
+  margin-top: 52px;
+}
+
+.plots__collapsing {
+  position: relative;
+  height: 0;
+  -webkit-transition-timing-function: ease;
+  -moz-transition-timing-function: ease;
+  -o-transition-timing-function: ease;
+  transition-timing-function: ease;
+  -webkit-transition-duration: 0.35s;
+  -moz-transition-duration: 0.35s;
+  -o-transition-duration: 0.35s;
+  transition-duration: 0.35s;
+  -webkit-transition-property: margin-top;
+  -moz-transition-property: margin-top;
+  -o-transition-property: margin-top;
+  transition-property: margin-top;
+}
+
+.plots__open {
+  margin-top: 237px;
+}
+
+.filters {
+  margin-top: 0;
+  margin-left: 0;
+  position: fixed;
+  width: 67%;
+  z-index: 1002;
+}
+
 .filters__title {
   text-align: center;
   font-size: larger;

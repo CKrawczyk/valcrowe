@@ -11,7 +11,10 @@ export default class App extends React.Component {
     this.handleSubmit = this.handleSubmit.bind(this);
     this.toggleOpen = this.toggleOpen.bind(this);
     this.toggleBusy = this.toggleBusy.bind(this);
+    this.scrollPage = this.scrollPage.bind(this);
     this.state = {
+      scrollX: 0,
+      scrollY: 0,
       open: false,
       query: {},
       count: 1913,
@@ -109,16 +112,25 @@ export default class App extends React.Component {
 
   handleSubmit() {
     const query = this.getQuery();
-    getStats(query, '1/')
-      .then((data) => (
-        this.setState({
-          count: data.count,
-          query,
-        })
-      ));
+    const scrollX = window.scrollX;
+    const scrollY = window.scrollY;
+    this.setState({ scrollX, scrollY }, () => {
+      getStats(query, '1/')
+        .then((data) => (
+          this.setState({
+            count: data.count,
+            query,
+          })
+        )
+      );
+    });
   }
 
-  toggleBusy(callback) {
+  scrollPage() {
+    window.scrollBy(this.state.scrollX, this.state.scrollY);
+  }
+
+  toggleBusy(callback = this.scrollPage) {
     this.setState({ busy: !this.state.busy }, callback);
   }
 
@@ -144,7 +156,7 @@ export default class App extends React.Component {
               <Tabs />
             </div>
           </Col>
-          <Col xs={10}>
+          <Col xs={10} id="content">
             {React.cloneElement(this.props.children, { query: this.state.query, filterProps, toggleBusy: this.toggleBusy })}
           </Col>
         </Row>

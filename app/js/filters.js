@@ -116,7 +116,7 @@ const Filters = (props) => {
   }
   return (
     <Col xs={12}>
-      <Well bsSize="small">
+      <Well bsSize="small" className="filters">
         <Row>
           <Col xs={2}>
             <Button block onClick={props.toggleOpen} bsSize="xsmall">{showHide} filters {icon}</Button>

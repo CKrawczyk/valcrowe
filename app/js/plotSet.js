@@ -87,12 +87,16 @@ export default class PlotSet extends React.Component {
   }
 
   render() {
+    let className = 'plots plots__collapsing';
+    if (this.props.filterProps.open) {
+      className = ' plots__open plots__collapsing';
+    }
     return (
       <div>
         <Row>
           <Filters {...this.props.filterProps} />
         </Row>
-        <Row>
+        <Row className={className}>
           {this.state.plots}
         </Row>
       </div>
