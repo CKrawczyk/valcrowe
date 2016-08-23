@@ -22,8 +22,9 @@ PROJECT_ROOT = os.path.dirname(os.path.abspath(__file__))
 # See https://docs.djangoproject.com/en/1.9/howto/deployment/checklist/
 
 node_env = os.environ.get('NODE_ENV', 'development')
+default_key = '!ms92^&o^fvchf@06==@kr96t2h^hr*-j3v9s4q&3&t(==jq(f'
 if node_env == 'production':
-    SECRET_KEY = os.environ['SECRET_KEY']
+    SECRET_KEY = os.environ.get('SECRET_KEY', default_key)
     DEBUG = False
     WEBPACK_LOADER = {
         'DEFAULT': {
@@ -32,7 +33,7 @@ if node_env == 'production':
         }
     }
 else:
-    SECRET_KEY = '!ms92^&o^fvchf@06==@kr96t2h^hr*-j3v9s4q&3&t(==jq(f'
+    SECRET_KEY = default_key
     DEBUG = True
     WEBPACK_LOADER = {
         'DEFAULT': {
