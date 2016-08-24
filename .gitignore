@@ -97,3 +97,5 @@ ENV/
 *one_off*.py
 node_modules
 assets/bundles
+database_url.sh
+database_local_url.sh
