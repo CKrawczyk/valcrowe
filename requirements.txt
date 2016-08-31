@@ -8,5 +8,6 @@ et-xmlfile==1.0.1
 gunicorn==19.6.0
 jdcal==1.2
 openpyxl==2.3.5
+progressbar==2.3
 psycopg2==2.6.2
 whitenoise==2.0.6

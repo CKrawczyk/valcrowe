@@ -2,6 +2,7 @@ from django.core.management.base import BaseCommand
 from stats.models import *
 from openpyxl import load_workbook
 from ._private import *
+import progressbar as pb
 
 wb_eth = load_workbook(
     filename='./inital_data/ORIGINAL DATA IDS ETHNICITY.xlsx',
@@ -14,6 +15,8 @@ wb = load_workbook(
     data_only=True
 )
 ws = wb['All_VOLCROWE DATA']
+
+widgets = ['Upload: ', pb.Percentage(), ' ', pb.Bar(marker='0', left='[', right=']'), ' ', pb.ETA()]
 
 
 class Command(BaseCommand):
@@ -185,6 +188,8 @@ class Command(BaseCommand):
 
     def handle(self, *args, **options):
         self.populateStatic()
+        pbar = pb.ProgressBar(widgets=widgets, maxval=len(ws.rows))
+        pbar.start()
         for rdx, r in enumerate(ws.rows):
             if (rdx > 2) and (rdx < 1918) and (rdx != 146) and (rdx != 401):
                 values = [i.value for i in r]
@@ -253,3 +258,5 @@ class Command(BaseCommand):
                         question = self.questions[qdx]
                         ans = {'answer': values[qdx + 68]}
                         self.createAnswer(user, question, ans)
+            pbar.update(rdx)
+        pbar.finish()
