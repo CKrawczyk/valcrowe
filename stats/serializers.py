@@ -2,7 +2,6 @@ from rest_framework import serializers
 from stats.models import *
 from collections import OrderedDict
 from answer_lookup import get_aggregation, cast_value
-from django.db.models import Prefetch
 
 
 class SurveyProjectSerializer(serializers.ModelSerializer):
@@ -151,48 +150,24 @@ class UserSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
 
-    @staticmethod
-    def setup_eager_loading(queryset, answer_list_filter):
-        """ Perform necessary eager loading of data. """
-        queryset = queryset.select_related('survey_project')
-        if (len(answer_list_filter.keys()) == 0):
-            queryset = queryset.prefetch_related(Prefetch('answer_list', queryset=Answer.objects.all()))
-        else:
-            queryset = queryset.prefetch_related(Prefetch('answer_list', queryset=Answer.objects.filter(**answer_list_filter)))
-        queryset = queryset.prefetch_related('project_list')
-        return queryset
-
     def to_representation(self, instance):
         ret = OrderedDict()
         fields = self._readable_fields
         for field in fields:
-            if (field.field_name not in ['answer_list']):
-                try:
-                    attribute = field.get_attribute(instance)
-                except SkipField:
-                    continue
-                check_for_none = attribute
-                if check_for_none is None:
-                    ret[field.field_name] = None
-                else:
-                    ret[field.field_name] = field.to_representation(attribute)
+            try:
+                attribute = field.get_attribute(instance)
+            except SkipField:
+                continue
+            check_for_none = attribute
+            if check_for_none is None:
+                ret[field.field_name] = None
+            else:
+                ret[field.field_name] = field.to_representation(attribute)
         project_list = instance.project_list.all()
         ret['projects'] = [project.get_project_display() for project in project_list]
         ret['projects_classification_count'] = [project.classifications for project in project_list]
         ret['home_project'] = [project.get_project_display() for project in project_list if project.home_project]
-        request_params = self.context['request'].query_params.dict()
-        answer_list_filter = {}
-        for key, value in request_params.iteritems():
-            if ('answer_list__' in key):
-                if ('__in' in key):
-                    answer_list_filter[key.replace('answer_list__', '')] = value.split(',')
-                else:
-                    answer_list_filter[key.replace('answer_list__', '')] = value
-        if (len(answer_list_filter.keys()) == 0):
-            attribute = instance.answer_list.all().order_by('question__number')
-        else:
-            attribute = instance.answer_list.filter(**answer_list_filter).order_by('question__number')
-        answer_list = self.fields['answer_list'].to_representation(attribute)
+        answer_list = ret.pop('answer_list')
         answer_dict = OrderedDict(('question_{0}'.format(answer['question']), cast_value(answer['answer'])) for answer in answer_list)
         ret.update(answer_dict)
         return ret

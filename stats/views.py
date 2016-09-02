@@ -2,6 +2,7 @@ import rest_framework_filters as filters
 from rest_framework import viewsets
 from stats.models import *
 from stats.serializers import *
+from django.db.models import Prefetch
 
 
 class SurveyProjectFilter(filters.FilterSet):
@@ -75,9 +76,24 @@ class UserViewSet(viewsets.ReadOnlyModelViewSet):
                     user_list_filter[key] = value.split(',')
                 else:
                     user_list_filter[key] = value
-        if (len(user_list_filter.keys()) == 0):
-            queryset = User.objects.all().order_by('id')
-        else:
-            queryset = User.objects.filter(**user_list_filter).order_by('id')
-        queryset = self.get_serializer_class().setup_eager_loading(queryset, answer_list_filter)
+        queryset = User.objects.all().order_by('id')
+        if (len(user_list_filter.keys()) > 0):
+            queryset = queryset.filter(**user_list_filter)
+        # set up prefetch
+        queryset = queryset.select_related('survey_project')
+        queryset = queryset.prefetch_related('project_list')
+        answer_queryset = Answer.objects.all().order_by('question__number')
+        if (len(answer_list_filter.keys()) > 0):
+            answer_queryset = answer_queryset.filter(**answer_list_filter)
+        answer_queryset = answer_queryset.select_related(
+            'answerOpen',
+            'answerBool',
+            'answerAD',
+            'answerGender',
+            'answerEdu',
+            'answerEthnicity',
+            'answerQuiz',
+            'question',
+        )
+        queryset = queryset.prefetch_related(Prefetch('answer_list', queryset=answer_queryset))
         return queryset
