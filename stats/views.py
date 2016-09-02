@@ -33,12 +33,40 @@ class QuestionViewSet(viewsets.ReadOnlyModelViewSet):
 
 
 class QuestionCountSet(viewsets.ReadOnlyModelViewSet):
-    filter_class = QuestionFilter
     serializer_class = QuestionCountSerializer
 
     def get_queryset(self):
         queryset = Question.objects.all().order_by('number')
-        queryset = self.get_serializer_class().setup_eager_loading(queryset)
+        queryset = queryset.select_related('kind', 'category', 'context')
+        request_params = self.request.query_params.dict()
+        answer_queryset = Answer.objects.all()
+        answer_set_filter = {}
+        question_filter = {}
+        for key, value in request_params.iteritems():
+            if ('answer_set__' in key):
+                if ('__in' in key):
+                    answer_set_filter[key.replace('answer_set__', '')] = value.split(',')
+                else:
+                    answer_set_filter[key.replace('answer_set__', '')] = value
+            else:
+                if ('__in' in key):
+                    question_filter[key.replace('category', 'category__category').replace('kind', 'kind__kind')] = value.split(',')
+                else:
+                    question_filter[key.replace('category', 'category__category').replace('kind', 'kind__kind')] = value
+        if (len(question_filter.keys()) > 0):
+            queryset = queryset.filter(**question_filter)
+        if (len(answer_set_filter.keys()) > 0):
+            answer_queryset = answer_queryset.filter(**answer_set_filter)
+        answer_queryset = answer_queryset.select_related(
+            'answerOpen',
+            'answerBool',
+            'answerAD',
+            'answerGender',
+            'answerEdu',
+            'answerEthnicity',
+            'answerQuiz'
+        )
+        queryset = queryset.prefetch_related(Prefetch('answer_set', queryset=answer_queryset))
         return queryset
 
 
@@ -60,8 +88,6 @@ class UserViewSet(viewsets.ReadOnlyModelViewSet):
     serializer_class = UserSerializer
 
     def get_queryset(self):
-        # do answer_list filter via Prefetch with a queryset
-        # do all project_list and survey_project prefetch as well
         request_params = self.request.query_params.dict()
         user_list_filter = {}
         answer_list_filter = {}

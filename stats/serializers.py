@@ -1,7 +1,26 @@
 from rest_framework import serializers
 from stats.models import *
-from collections import OrderedDict
-from answer_lookup import get_aggregation, cast_value
+from collections import OrderedDict, Counter
+import json
+import stats
+static_path = stats.__path__[0]+'/static/'
+with open(static_path+'city_location.json', 'r') as f:
+    map_locations = json.load(f)
+# from pprint import pprint
+# from django.db import connection
+
+
+def cast_value(s):
+    if (type(s) != unicode):
+        return s
+    try:
+        return int(s)
+    except ValueError:
+        pass
+    try:
+        return float(s)
+    except ValueError:
+        return s
 
 
 class SurveyProjectSerializer(serializers.ModelSerializer):
@@ -62,34 +81,6 @@ class QuestionSerializer(serializers.ModelSerializer):
         return ret
 
 
-class QuestionCountSerializer(serializers.ModelSerializer):
-    category = QuestionCategoryField(read_only=True)
-    kind = QuestionTypeField(read_only=True)
-    context = QuestionContextField(read_only=True)
-
-    @staticmethod
-    def setup_eager_loading(queryset):
-        """ Perform necessary eager loading of data. """
-        queryset = queryset.prefetch_related('answer_set')
-        return queryset
-
-    class Meta:
-        model = Question
-
-    def to_representation(self, instance):
-        ret = OrderedDict()
-        fields = self._readable_fields
-        for field in fields:
-            try:
-                attribute = field.get_attribute(instance)
-            except SkipField:
-                continue
-            if attribute is not None:
-                ret[field.field_name] = field.to_representation(attribute)
-        # add answer counts
-        return get_aggregation(ret, self.fields, self.context, instance)
-
-
 class AnswerEthnicitySerializer(serializers.ModelSerializer):
     answer = serializers.CharField(source='get_answer_display')
 
@@ -99,6 +90,8 @@ class AnswerEthnicitySerializer(serializers.ModelSerializer):
 
 
 class AnswerQuizSerializer(serializers.ModelSerializer):
+    # confidence = serializers.CharField(source='get_confidence_display')
+
     class Meta:
         model = AnswerQuiz
         fields = ('score', 'percent', 'maxScore', 'confidence')
@@ -139,6 +132,86 @@ class AnswerSerializer(serializers.ModelSerializer):
                     ret['answer'] = represenation
                 else:
                     ret[field.field_name] = represenation
+        return ret
+
+
+class QuestionCountSerializer(serializers.ModelSerializer):
+    category = QuestionCategoryField(read_only=True)
+    kind = QuestionTypeField(read_only=True)
+    context = QuestionContextField(read_only=True)
+    answer_set = AnswerSerializer(many=True)
+
+    class Meta:
+        model = Question
+
+    def to_representation(self, instance):
+        ret = OrderedDict()
+        fields = self._readable_fields
+        for field in fields:
+            try:
+                attribute = field.get_attribute(instance)
+            except SkipField:
+                continue
+            if attribute is not None:
+                ret[field.field_name] = field.to_representation(attribute)
+        answer_set = ret.pop('answer_set')
+        ret['count'] = len(answer_set)
+        plot_type = instance.plot_type
+        if plot_type == 'M':
+            answer_list = [ans['answer'] for ans in answer_set]
+        else:
+            answer_list = [cast_value(ans['answer']) for ans in answer_set]
+        if plot_type == 'P':
+            if (instance.kind.kind == 'ET'):
+                ret['results'] = Counter([ans['answer'] for ans in answer_list])
+            else:
+                ret['results'] = Counter(answer_list)
+        elif plot_type == 'H':
+            ret['results'] = answer_list
+        elif plot_type == 'Q':
+            ret['results'] = {
+                'confidence': [ans['confidence'] for ans in answer_list],
+                'scores': [ans['score'] for ans in answer_list],
+                'confidence_map': {
+                    1: 'Very unconfident',
+                    2: 'Unconfident',
+                    3: 'Somewhat unconfident',
+                    4: 'Neither confident or unconfident',
+                    5: 'Somewhat confident',
+                    6: 'Confident',
+                    7: 'Very confident',
+                },
+                'count': Counter(['{0}, {1}'.format(ans['score'], ans['confidence']) for ans in answer_list]),
+            }
+        else:
+            lat_all = []
+            lon_all = []
+            city_all = []
+            for ans in answer_list:
+                city = ans.lower()
+                if city in map_locations:
+                    geo = map_locations[city]
+                    lat_all.append(geo['lat'])
+                    lon_all.append(geo['lng'])
+                    city_all.append(city)
+            c = Counter(zip(lat_all, lon_all, city_all))
+            lat = []
+            lon = []
+            city = []
+            count = []
+            for key, value in c.iteritems():
+                lat.append(key[0])
+                lon.append(key[1])
+                city.append(key[2])
+                count.append(value)
+            ret['results'] = {
+                'lat': lat,
+                'lon': lon,
+                'city': city,
+                'count': count,
+            }
+        # pprint(connection.queries)
+        # print '=========='
         return ret
 
 

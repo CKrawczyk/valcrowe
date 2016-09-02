@@ -133,14 +133,14 @@ const Filters = (props) => {
               </Col>
               <Col xs={4}>
                 <Row>
-                  <GtLtFilter {...props} query="user__total_n_classifications" text="Classification Count" bs={{ xs: 12 }} />
+                  <GtLtFilter {...props} query="answer_set__user__total_n_classifications" text="Classification Count" bs={{ xs: 12 }} />
                 </Row>
                 <Row>
-                  <GtLtFilter {...props} query="user__talk_posts" text="Talk Post" bs={{ xs: 12 }} />
+                  <GtLtFilter {...props} query="answer_set__user__talk_posts" text="Talk Post" bs={{ xs: 12 }} />
                 </Row>
               </Col>
-              <CheckboxFilter {...props} query="user__survey_project__project__in" text="Survey Project" options={surveyProject} bs={{ xs: 4 }} />
-              <CheckboxFilter {...props} query="user__country__in" text="Country" options={country} bs={{ xs: 4 }} />
+              <CheckboxFilter {...props} query="answer_set__user__survey_project__project__in" text="Survey Project" options={surveyProject} bs={{ xs: 4 }} />
+              <CheckboxFilter {...props} query="answer_set__user__country__in" text="Country" options={country} bs={{ xs: 4 }} />
             </Row>
             <Row>
               <Col xs={4} xsOffset={4}>

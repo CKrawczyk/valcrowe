@@ -20,18 +20,18 @@ export default class App extends React.Component {
       count: 1913,
       busy: false,
       userFilter: {
-        user__total_n_classifications__gte: '',
-        user__total_n_classifications__lte: '',
-        user__talk_posts__gte: '',
-        user__talk_posts__lte: '',
-        user__survey_project__project__in: {
+        answer_set__user__total_n_classifications__gte: '',
+        answer_set__user__total_n_classifications__lte: '',
+        answer_set__user__talk_posts__gte: '',
+        answer_set__user__talk_posts__lte: '',
+        answer_set__user__survey_project__project__in: {
           GZ: true,
           PH: true,
           PW: true,
           SE: true,
           SS: true,
         },
-        user__country__in: {
+        answer_set__user__country__in: {
           US: true,
           UK: true,
           Ca: true,
@@ -50,40 +50,40 @@ export default class App extends React.Component {
     const surveyProject = [];
     /* eslint guard-for-in: 0 */
     /* eslint no-restricted-syntax: 0 */
-    for (const key in this.state.userFilter.user__survey_project__project__in) {
-      if (this.state.userFilter.user__survey_project__project__in[key]) {
+    for (const key in this.state.userFilter.answer_set__user__survey_project__project__in) {
+      if (this.state.userFilter.answer_set__user__survey_project__project__in[key]) {
         surveyProject.push(key);
       }
     }
     const country = [];
-    for (const key in this.state.userFilter.user__country__in) {
-      if (this.state.userFilter.user__country__in[key]) {
+    for (const key in this.state.userFilter.answer_set__user__country__in) {
+      if (this.state.userFilter.answer_set__user__country__in[key]) {
         country.push(key);
       }
     }
     const query = {
       ...this.state.userFilter,
-      user__survey_project__project__in: surveyProject,
-      user__country__in: country,
+      answer_set__user__survey_project__project__in: surveyProject,
+      answer_set__user__country__in: country,
     };
     // clean up unneeded querys
     if (surveyProject.length === 5) {
-      delete(query.user__survey_project__project__in);
+      delete(query.answer_set__user__survey_project__project__in);
     }
     if (country.length === 9) {
-      delete(query.user__country__in);
+      delete(query.answer_set__user__country__in);
     }
-    if (query.user__total_n_classifications__gte === '') {
-      delete(query.user__total_n_classifications__gte);
+    if (query.answer_set__user__total_n_classifications__gte === '') {
+      delete(query.answer_set__user__total_n_classifications__gte);
     }
-    if (query.user__total_n_classifications__lte === '') {
-      delete(query.user__total_n_classifications__lte);
+    if (query.answer_set__user__total_n_classifications__lte === '') {
+      delete(query.answer_set__user__total_n_classifications__lte);
     }
-    if (query.user__talk_posts__gte === '') {
-      delete(query.user__talk_posts__gte);
+    if (query.answer_set__user__talk_posts__gte === '') {
+      delete(query.answer_set__user__talk_posts__gte);
     }
-    if (query.user__talk_posts__lte === '') {
-      delete(query.user__talk_posts__lte);
+    if (query.answer_set__user__talk_posts__lte === '') {
+      delete(query.answer_set__user__talk_posts__lte);
     }
     return query;
   }
