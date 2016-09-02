@@ -141,7 +141,7 @@ class User(models.Model):
 @python_2_unicode_compatible
 class Answer(models.Model):
     question = models.ForeignKey(Question, on_delete=models.CASCADE)
-    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='answer_list')
 
     def __str__(self):
         return 'user: {0}, question: {1}'.format(

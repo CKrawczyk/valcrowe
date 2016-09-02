@@ -2,7 +2,6 @@ import rest_framework_filters as filters
 from rest_framework import viewsets
 from stats.models import *
 from stats.serializers import *
-from django.shortcuts import render
 
 
 class SurveyProjectFilter(filters.FilterSet):
@@ -14,29 +13,6 @@ class SurveyProjectFilter(filters.FilterSet):
     class Meta:
         model = SurveyProject
         fields = ['project', 'classifications', 'sessions']
-
-
-class UserFilter(filters.FilterSet):
-    id = filters.AllLookupsFilter(name='id')
-    survey_project = filters.RelatedFilter(
-        SurveyProjectFilter, name='survey_project'
-    )
-    talk_posts = filters.AllLookupsFilter(name='talk_posts')
-    classifications = filters.AllLookupsFilter(name='total_n_classifications')
-    sessions = filters.AllLookupsFilter(name='total_n_sessions')
-    projects = filters.AllLookupsFilter(name='total_n_projects')
-    country = filters.AllLookupsFilter(name='country')
-
-    class Meta:
-        model = User
-        fields = ['id', 'country', 'survey_project', 'talk_posts',
-                  'classifications', 'sessions', 'projects']
-
-
-class UserViewSet(viewsets.ReadOnlyModelViewSet):
-    filter_class = UserFilter
-    queryset = User.objects.all().order_by('id')
-    serializer_class = UserSerializer
 
 
 class QuestionFilter(filters.FilterSet):
@@ -57,20 +33,51 @@ class QuestionViewSet(viewsets.ReadOnlyModelViewSet):
 
 class QuestionCountSet(viewsets.ReadOnlyModelViewSet):
     filter_class = QuestionFilter
-    queryset = Question.objects.all().order_by('number')
     serializer_class = QuestionCountSerializer
+
+    def get_queryset(self):
+        queryset = Question.objects.all().order_by('number')
+        queryset = self.get_serializer_class().setup_eager_loading(queryset)
+        return queryset
 
 
 class AnswerFilter(filters.FilterSet):
-    question = filters.RelatedFilter(QuestionFilter, name='question')
-    user = filters.RelatedFilter(UserFilter, name='user')
+    question = filters.AllLookupsFilter(name='question__number')
 
     class Meta:
         model = Answer
-        fields = ['question', 'user']
+        fields = ['question']
 
 
 class AnswerViewSet(viewsets.ReadOnlyModelViewSet):
     filter_class = AnswerFilter
     queryset = Answer.objects.all().order_by('question__number')
     serializer_class = AnswerSerializer
+
+
+class UserViewSet(viewsets.ReadOnlyModelViewSet):
+    serializer_class = UserSerializer
+
+    def get_queryset(self):
+        # do answer_list filter via Prefetch with a queryset
+        # do all project_list and survey_project prefetch as well
+        request_params = self.request.query_params.dict()
+        user_list_filter = {}
+        answer_list_filter = {}
+        for key, value in request_params.iteritems():
+            if ('answer_list__' in key):
+                if ('__in' in key):
+                    answer_list_filter[key.replace('answer_list__', '')] = value.split(',')
+                else:
+                    answer_list_filter[key.replace('answer_list__', '')] = value
+            else:
+                if ('__in' in key):
+                    user_list_filter[key] = value.split(',')
+                else:
+                    user_list_filter[key] = value
+        if (len(user_list_filter.keys()) == 0):
+            queryset = User.objects.all().order_by('id')
+        else:
+            queryset = User.objects.filter(**user_list_filter).order_by('id')
+        queryset = self.get_serializer_class().setup_eager_loading(queryset, answer_list_filter)
+        return queryset

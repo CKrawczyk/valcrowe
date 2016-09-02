@@ -135,6 +135,8 @@ answer_lookup = {
 
 
 def cast_value(s):
+    if (type(s) != unicode):
+        return s
     try:
         return int(s)
     except ValueError:

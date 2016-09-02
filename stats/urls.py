@@ -4,10 +4,10 @@ from django.contrib import admin
 from rest_framework import routers
 
 router = routers.DefaultRouter()
-router.register(r'users', views.UserViewSet)
+router.register(r'users', views.UserViewSet, base_name='User')
 router.register(r'answers', views.AnswerViewSet)
 router.register(r'questions', views.QuestionViewSet)
-router.register(r'counts', views.QuestionCountSet)
+router.register(r'counts', views.QuestionCountSet, base_name='Counts')
 
 urlpatterns = [
     url(r'^', include(router.urls)),
