@@ -1,1 +1,1 @@
-web: gunicorn volcrowe.wsgi -w 3 --log-file -
+web: gunicorn volcrowe.wsgi -w 4 --log-file -
