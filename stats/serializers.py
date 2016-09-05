@@ -88,7 +88,7 @@ class AnswerEthnicitySerializer(serializers.ModelSerializer):
 
 
 class AnswerQuizSerializer(serializers.ModelSerializer):
-    # confidence = serializers.CharField(source='get_confidence_display')
+    confidence = serializers.CharField(source='get_confidence_display')
 
     class Meta:
         model = AnswerQuiz

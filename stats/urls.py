@@ -1,11 +1,9 @@
 from django.conf.urls import include, url
 import stats.views as views
-from django.contrib import admin
 from rest_framework import routers
 
 router = routers.DefaultRouter()
 router.register(r'users', views.UserViewSet, base_name='User')
-router.register(r'answers', views.AnswerViewSet)
 router.register(r'questions', views.QuestionViewSet)
 router.register(r'counts', views.QuestionCountSet, base_name='Counts')
 
@@ -14,5 +12,4 @@ urlpatterns = [
     url(r'^api-auth/',
         include('rest_framework.urls', namespace='rest_framework')
         ),
-    url(r'^admin/', include(admin.site.urls)),
 ]

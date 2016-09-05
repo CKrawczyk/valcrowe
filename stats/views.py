@@ -5,17 +5,6 @@ from stats.serializers import *
 from django.db.models import Prefetch
 
 
-class SurveyProjectFilter(filters.FilterSet):
-    project = filters.AllLookupsFilter(name='project')
-    classifications = filters.AllLookupsFilter(name='total_n_classifications')
-    sessions = filters.AllLookupsFilter(name='total_n_sessions')
-    days = filters.AllLookupsFilter(name='total_n_unique_days')
-
-    class Meta:
-        model = SurveyProject
-        fields = ['project', 'classifications', 'sessions']
-
-
 class QuestionFilter(filters.FilterSet):
     number = filters.AllLookupsFilter(name='number')
     kind = filters.CharFilter(name='kind__kind')
@@ -68,20 +57,6 @@ class QuestionCountSet(viewsets.ReadOnlyModelViewSet):
         )
         queryset = queryset.prefetch_related(Prefetch('answer_set', queryset=answer_queryset))
         return queryset
-
-
-class AnswerFilter(filters.FilterSet):
-    question = filters.AllLookupsFilter(name='question__number')
-
-    class Meta:
-        model = Answer
-        fields = ['question']
-
-
-class AnswerViewSet(viewsets.ReadOnlyModelViewSet):
-    filter_class = AnswerFilter
-    queryset = Answer.objects.all().order_by('question__number')
-    serializer_class = AnswerSerializer
 
 
 class LargeResultsSetPagination(pagination.PageNumberPagination):
