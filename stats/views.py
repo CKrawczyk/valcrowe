@@ -1,5 +1,5 @@
 import rest_framework_filters as filters
-from rest_framework import viewsets
+from rest_framework import viewsets, pagination
 from stats.models import *
 from stats.serializers import *
 from django.db.models import Prefetch
@@ -84,11 +84,20 @@ class AnswerViewSet(viewsets.ReadOnlyModelViewSet):
     serializer_class = AnswerSerializer
 
 
+class LargeResultsSetPagination(pagination.PageNumberPagination):
+    page_size = 100
+    page_size_query_param = 'page_size'
+    max_page_size = 2000
+
+
 class UserViewSet(viewsets.ReadOnlyModelViewSet):
     serializer_class = UserSerializer
+    pagination_class = LargeResultsSetPagination
 
     def get_queryset(self):
         request_params = self.request.query_params.dict()
+        request_params.pop('page_size', 0)
+        request_params.pop('format', '')
         user_list_filter = {}
         answer_list_filter = {}
         for key, value in request_params.iteritems():
