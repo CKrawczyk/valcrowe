@@ -6,8 +6,6 @@ import stats
 static_path = stats.__path__[0]+'/static/'
 with open(static_path+'city_location.json', 'r') as f:
     map_locations = json.load(f)
-# from pprint import pprint
-# from django.db import connection
 
 
 def cast_value(s):
@@ -135,11 +133,21 @@ class AnswerSerializer(serializers.ModelSerializer):
         return ret
 
 
+answer_lut = {
+    'OP': 'answerOpen',
+    'QU': 'answerQuiz',
+    'YN': 'answerBool',
+    'AD': 'answerAD',
+    'GN': 'answerGender',
+    'ET': 'answerEthnicity',
+    'ED': 'answerEdu'
+}
+
+
 class QuestionCountSerializer(serializers.ModelSerializer):
     category = QuestionCategoryField(read_only=True)
     kind = QuestionTypeField(read_only=True)
     context = QuestionContextField(read_only=True)
-    answer_set = AnswerSerializer(many=True)
 
     class Meta:
         model = Question
@@ -153,25 +161,24 @@ class QuestionCountSerializer(serializers.ModelSerializer):
             except SkipField:
                 continue
             if attribute is not None:
-                ret[field.field_name] = field.to_representation(attribute)
-        answer_set = ret.pop('answer_set')
+                if field.field_name != 'answer_set':
+                    ret[field.field_name] = field.to_representation(attribute)
+        answer_set = instance.answer_set.all()
         ret['count'] = len(answer_set)
         plot_type = instance.plot_type
-        if plot_type == 'M':
-            answer_list = [ans['answer'] for ans in answer_set]
-        else:
-            answer_list = [cast_value(ans['answer']) for ans in answer_set]
         if plot_type == 'P':
-            if (instance.kind.kind == 'ET'):
-                ret['results'] = Counter([ans['answer'] for ans in answer_list])
-            else:
-                ret['results'] = Counter(answer_list)
+            try:
+                ret['results'] = Counter([ans.__getattribute__(answer_lut[instance.kind.kind]).get_answer_display() for ans in answer_set])
+            except AttributeError:
+                ret['results'] = Counter([ans.__getattribute__(answer_lut[instance.kind.kind]).answer for ans in answer_set])
         elif plot_type == 'H':
-            ret['results'] = answer_list
+            ret['results'] = [cast_value(ans.__getattribute__(answer_lut[instance.kind.kind]).answer) for ans in answer_set]
         elif plot_type == 'Q':
+            confidence = [ans.__getattribute__(answer_lut[instance.kind.kind]).confidence for ans in answer_set]
+            score = [ans.__getattribute__(answer_lut[instance.kind.kind]).score for ans in answer_set]
             ret['results'] = {
-                'confidence': [ans['confidence'] for ans in answer_list],
-                'scores': [ans['score'] for ans in answer_list],
+                'confidence': confidence,
+                'scores': score,
                 'confidence_map': {
                     1: 'Very unconfident',
                     2: 'Unconfident',
@@ -181,14 +188,14 @@ class QuestionCountSerializer(serializers.ModelSerializer):
                     6: 'Confident',
                     7: 'Very confident',
                 },
-                'count': Counter(['{0}, {1}'.format(ans['score'], ans['confidence']) for ans in answer_list]),
+                'count': Counter(['{0}, {1}'.format(ans[0], ans[1]) for ans in zip(score, confidence)]),
             }
         else:
             lat_all = []
             lon_all = []
             city_all = []
-            for ans in answer_list:
-                city = ans.lower()
+            for ans in answer_set:
+                city = ans.__getattribute__(answer_lut[instance.kind.kind]).answer.lower()
                 if city in map_locations:
                     geo = map_locations[city]
                     lat_all.append(geo['lat'])
@@ -210,8 +217,6 @@ class QuestionCountSerializer(serializers.ModelSerializer):
                 'city': city,
                 'count': count,
             }
-        # pprint(connection.queries)
-        # print '=========='
         return ret
 
 
