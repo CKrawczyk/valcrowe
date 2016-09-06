@@ -2,6 +2,14 @@ body {
   margin: 30px;
 }
 
+.home__center {
+  text-align: center;
+}
+
+.home__center>h2 {
+  font-size: 1.5em;
+}
+
 .title {
   text-align: center;
   height: 3em;
