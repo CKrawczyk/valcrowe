@@ -30,8 +30,8 @@ export default class Csv extends React.Component {
 
   onSave() {
     const zip = new JSZip();
-    zip.file('VOLCROWE_data/VOLCROWE_data.csv', this.state.csv);
-    zip.file('VOLCROWE_data/VOLCROWE_questions.csv', this.state.questions);
+    zip.file(`VOLCROWE_data_${this.props.categoryID}/VOLCROWE_data.csv`, this.state.csv);
+    zip.file(`VOLCROWE_data_${this.props.categoryID}/VOLCROWE_questions.csv`, this.state.questions);
     zip.generateAsync({ type: 'blob' })
       .then((blob) => {
         FileSaver.saveAs(blob, `VOLCROWE_export_${this.props.categoryID}.zip`);

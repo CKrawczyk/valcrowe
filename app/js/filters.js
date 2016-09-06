@@ -163,7 +163,7 @@ Filters.propTypes = {
   open: React.PropTypes.bool,
   busy: React.PropTypes.bool,
   categoryID: React.PropTypes.string,
-  query: React.PropTypes.string,
+  query: React.PropTypes.object,
 };
 
 export default Filters;
