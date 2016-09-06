@@ -8,8 +8,40 @@ function jsonToURI(obj) {
   )).join('&');
 }
 
-export default function getStats(params, base = '') {
+export function getStats(params, base = '') {
   const url = `${BASE_URL}${base}?${jsonToURI(params)}`;
+  const header = {
+    method: 'GET',
+    headers: {
+      Accept: 'application/json',
+    },
+  };
+  return fetch(url, header)
+    .then((response) => (
+      response.json()
+    ));
+}
+
+const USER_BASE_URL = '/stats/users/';
+
+export function getUsers(params, base = '') {
+  const url = `${USER_BASE_URL}${base}?${jsonToURI(params)}`;
+  const header = {
+    method: 'GET',
+    headers: {
+      Accept: 'application/json',
+    },
+  };
+  return fetch(url, header)
+    .then((response) => (
+      response.json()
+    ));
+}
+
+const QUESTION_BASE_URL = '/stats/questions';
+
+export function getQuestions(params, base = '') {
+  const url = `${QUESTION_BASE_URL}${base}?${jsonToURI(params)}`;
   const header = {
     method: 'GET',
     headers: {

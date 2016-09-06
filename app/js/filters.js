@@ -1,6 +1,7 @@
 import React from 'react';
 import { Row, Col, Well, FormControl, Checkbox, Button, Collapse, Glyphicon } from 'react-bootstrap';
 import Spinner from 'react-spinkit';
+import Csv from './csv';
 
 const GtLtFilter = (props) => (
   <Col {...props.bs} className="filter">
@@ -124,6 +125,7 @@ const Filters = (props) => {
           <Col xs={8} className="filters__count">
             {inner}
           </Col>
+          <Csv bs={{ xs: 2 }} categoryID={props.categoryID} query={props.query} />
         </Row>
         <Collapse in={props.open}>
           <div>
@@ -160,6 +162,8 @@ Filters.propTypes = {
   count: React.PropTypes.number,
   open: React.PropTypes.bool,
   busy: React.PropTypes.bool,
+  categoryID: React.PropTypes.string,
+  query: React.PropTypes.string,
 };
 
 export default Filters;

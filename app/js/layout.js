@@ -1,7 +1,7 @@
 import React from 'react';
 import { Grid, Row, Col } from 'react-bootstrap';
 import Tabs from './tabs';
-import getStats from './stats-api';
+import { getStats } from './stats-api';
 
 export default class App extends React.Component {
   constructor(props) {

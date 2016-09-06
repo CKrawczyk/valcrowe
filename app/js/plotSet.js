@@ -1,6 +1,6 @@
 import React from 'react';
 import { Row, Col, Clearfix } from 'react-bootstrap';
-import getStats from './stats-api';
+import { getStats } from './stats-api';
 import Plot from './plot';
 import Legend from './legend';
 import plotOrder from './plot_order';
@@ -94,7 +94,7 @@ export default class PlotSet extends React.Component {
     return (
       <div>
         <Row>
-          <Filters {...this.props.filterProps} />
+          <Filters {...this.props.filterProps} categoryID={this.props.params.categoryID} query={this.props.query} />
         </Row>
         <Row className={className}>
           {this.state.plots}

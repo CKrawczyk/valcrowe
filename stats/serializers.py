@@ -65,8 +65,9 @@ class QuestionSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Question
+        fields = ('number', 'category', 'kind', 'context', 'question_text')
 
-    def to_representation(self, instance):
+    ''' def to_representation(self, instance):
         ret = OrderedDict()
         fields = self._readable_fields
         for field in fields:
@@ -76,7 +77,7 @@ class QuestionSerializer(serializers.ModelSerializer):
                 continue
             if attribute is not None:
                 ret[field.field_name] = field.to_representation(attribute)
-        return ret
+        return ret'''
 
 
 class AnswerEthnicitySerializer(serializers.ModelSerializer):
