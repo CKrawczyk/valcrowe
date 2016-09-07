@@ -1,5 +1,5 @@
 import React from 'react';
-import { Row, Col, Button } from 'react-bootstrap';
+import { Col, Button } from 'react-bootstrap';
 import { getUsers, getQuestions } from './stats-api';
 import json2csv from 'json2csv';
 import Spinner from 'react-spinkit';
