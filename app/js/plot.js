@@ -1,7 +1,7 @@
 import React from 'react';
 import ReactDom from 'react-dom';
 import Plotly from 'react-plotlyjs';
-import { Col } from 'react-bootstrap';
+import { Col, Row } from 'react-bootstrap';
 import Keys from './pieKeys';
 import Spinner from 'react-spinkit';
 
@@ -227,8 +227,10 @@ export default class Plot extends React.Component {
     if (this.state.data !== null) {
       output = (
         <Col {...this.props.info.bs} name={`result-${this.props.input.number}`}>
-          <div className="title">{this.props.input.question_text}</div>
-          <Plotly data={this.state.data} layout={this.state.layout} config={this.state.config} />
+          {this.props.children}
+          <Row>
+            <Plotly data={this.state.data} layout={this.state.layout} config={this.state.config} />
+          </Row>
         </Col>
       );
     }
@@ -239,4 +241,5 @@ export default class Plot extends React.Component {
 Plot.propTypes = {
   info: React.PropTypes.object,
   input: React.PropTypes.object,
+  children: React.PropTypes.node,
 };

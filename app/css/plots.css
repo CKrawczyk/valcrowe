@@ -22,6 +22,10 @@ body {
   font-weight: 800;
 }
 
+.context>span {
+  font-weight: normal;
+}
+
 .plots {
   margin-top: 52px;
 }
@@ -113,4 +117,9 @@ hr {
   border-radius: 4px 0 0 4px;
   margin-right: 0;
   display:block;
+}
+
+.popover {
+  max-width: 965px;
+  width: 965px;
 }

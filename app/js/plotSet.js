@@ -3,8 +3,9 @@ import { Row, Col, Clearfix } from 'react-bootstrap';
 import { getStats } from './stats-api';
 import Plot from './plot';
 import Legend from './legend';
-import plotOrder from './plot_order';
+import { plotOrder } from './plot_order';
 import Filters from './filters';
+import { Link } from 'react-router';
 
 export default class PlotSet extends React.Component {
   constructor(props) {
@@ -51,7 +52,13 @@ export default class PlotSet extends React.Component {
       const result = this.state.data.results[info.index];
       switch (info.type) {
         case 'plot':
-          plots.push(<Plot input={result} key={`${this.state.kdx}:${result.number}`} info={info} />);
+          plots.push(
+            <Plot input={result} key={`${this.state.kdx}:${result.number}`} info={info}>
+              <div className="title">
+                <Link to={`question/${result.number}`}>{`${result.number}: ${result.question_text}`}</Link>
+              </div>
+            </Plot>
+          );
           break;
         case 'legend':
           plots.push(<Legend key={`${this.state.kdx}:Legend:${ldx}`} info={info} />);

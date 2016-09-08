@@ -115,17 +115,29 @@ const Filters = (props) => {
   if (!props.busy) {
     inner = `Showing ${props.count} out of 1913 responses`;
   }
+  let csv;
+  if (props.categoryID) {
+    csv = <Csv bs={{ xs: 2 }} categoryID={props.categoryID} query={props.query} />;
+  }
+  let className = 'filters';
+  if (props.className) {
+    className = `filters${props.className}`;
+  }
+  let openButton;
+  if (props.toggleOpen) {
+    openButton = <Button block onClick={props.toggleOpen} bsSize="xsmall">{showHide} filters {icon}</Button>;
+  }
   return (
     <Col xs={12}>
-      <Well bsSize="small" className="filters">
+      <Well bsSize="small" className={className}>
         <Row>
           <Col xs={2}>
-            <Button block onClick={props.toggleOpen} bsSize="xsmall">{showHide} filters {icon}</Button>
+            {openButton}
           </Col>
           <Col xs={8} className="filters__count">
             {inner}
           </Col>
-          <Csv bs={{ xs: 2 }} categoryID={props.categoryID} query={props.query} />
+          {csv}
         </Row>
         <Collapse in={props.open}>
           <div>
@@ -164,6 +176,7 @@ Filters.propTypes = {
   busy: React.PropTypes.bool,
   categoryID: React.PropTypes.string,
   query: React.PropTypes.object,
+  className: React.PropTypes.string,
 };
 
 export default Filters;

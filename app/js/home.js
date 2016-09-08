@@ -42,7 +42,7 @@ const Home = () => (
       <h2>The Data</h2>
       <p>
         An anonymised version of the full survey dataset is available for public use <a href="http://www.icg.port.ac.uk/~krawcyzc/VOLCROWE_export_all_data.zip">here</a>.
-        Filtered version of this data are available via <code>download</code> links on each of the question category pages.  If you use or refer to this data in any way,
+        Filtered version of this data are available via the <code>download visible data</code> links on each of the question category pages.  If you use or refer to this data in any way,
         please cite the <a href="https://volcrowe.org/">VOLCROWE</a> project and this website as the original source.  If you intend to use the survey data as part of any academic research,
         please contact the <a href="mailto:joe.cox@port.ac.uk">Principal Investigator</a> so that this can be recorded and acknowledged.  We would also be happy to answer
         any questions you might have and to discuss the possibility of working together on research connected with the data.
