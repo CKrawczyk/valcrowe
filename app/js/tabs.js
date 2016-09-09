@@ -1,5 +1,5 @@
 import React from 'react';
-import { Navbar, Nav, NavItem } from 'react-bootstrap';
+import { Nav, NavItem } from 'react-bootstrap';
 import { LinkContainer, IndexLinkContainer } from 'react-router-bootstrap';
 
 const Tabs = () => (
@@ -57,6 +57,9 @@ const Tabs = () => (
     </LinkContainer>
     <LinkContainer to={{ pathname: '/Re' }}>
       <NavItem eventKey={18}>Religion</NavItem>
+    </LinkContainer>
+    <LinkContainer to={{ pathname: '/Users' }}>
+      <NavItem eventKey={18}>Users</NavItem>
     </LinkContainer>
   </Nav>
 );

@@ -184,11 +184,12 @@ class UserCountSet(views.APIView):
         queryset = self.get_queryset()
         ret = OrderedDict()
         ret['count'] = len(queryset)
-        ret['survey_project'] = OrderedDict()
-        ret['survey_project']['project'] = Counter([user.survey_project.get_project_display() for user in queryset])
+        ret['results'] = OrderedDict()
+        ret['results']['survey_project'] = OrderedDict()
+        ret['results']['survey_project']['project'] = {'results': Counter([user.survey_project.get_project_display() for user in queryset]), 'plot_type': 'P', 'number': 'survey_project.project'}
         for field in userCountNestedFieldList:
-            ret['survey_project'][field] = self.full_list(field, queryset, nested=True)
-        ret['country'] = Counter([user.get_country_display() for user in queryset])
+            ret['results']['survey_project'][field] = {'results': self.full_list(field, queryset, nested=True), 'plot_type': 'H', 'number': 'survey_project.{0}'.format(field)}
+        ret['results']['country'] = {'results': Counter([user.get_country_display() for user in queryset]), 'plot_type': 'P', 'number': 'country'}
         for field in userCountFieldList:
-            ret[field] = self.full_list(field, queryset)
+            ret['results'][field] = {'results': self.full_list(field, queryset), 'plot_type': 'H', 'number': field}
         return response.Response(ret)

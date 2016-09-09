@@ -304,6 +304,10 @@ export const plotOrder = {
     },
     legend('AD', { xs: 4 }),
   ],
+  Users: [
+    bar('total_n_classifications', { autobinx: false, xbins: { start: 0, end: 600000, size: 20 } }, { title: 'Total Classifications', range: [0, 1700] }),
+    bar('talk_posts', { autobinx: false, xbins: { start: -0.5, end: 25000.5, size: 1 } }, { title: 'Total Talk Posts', range: [0, 27] }),
+  ],
 };
 
 // include optional legend param for each question

@@ -42,7 +42,7 @@ export default class PlotSet extends React.Component {
     });
   }
 
-  getPlots() {
+  getPlots(title = true) {
     /* eslint no-case-declarations: 0 */
     const plots = [];
     let idx = 0;
@@ -52,11 +52,17 @@ export default class PlotSet extends React.Component {
       const result = this.state.data.results[info.index];
       switch (info.type) {
         case 'plot':
-          plots.push(
-            <Plot input={result} key={`${this.state.kdx}:${result.number}`} info={info}>
+          let titleDiv;
+          if (title) {
+            titleDiv = (
               <div className="title">
                 <Link to={`question/${result.number}`}>{`${result.number}: ${result.question_text}`}</Link>
               </div>
+            );
+          }
+          plots.push(
+            <Plot input={result} key={`${this.state.kdx}:${result.number}`} info={info}>
+              {titleDiv}
             </Plot>
           );
           break;
