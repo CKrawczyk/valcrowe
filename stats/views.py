@@ -1,8 +1,9 @@
 import rest_framework_filters as filters
-from rest_framework import viewsets, pagination
+from rest_framework import viewsets, pagination, views, response
 from stats.models import *
 from stats.serializers import *
 from django.db.models import Prefetch
+from collections import OrderedDict, Counter
 
 
 class QuestionFilter(filters.FilterSet):
@@ -107,3 +108,87 @@ class UserViewSet(viewsets.ReadOnlyModelViewSet):
         )
         queryset = queryset.prefetch_related(Prefetch('answer_list', queryset=answer_queryset))
         return queryset
+
+
+userCountFieldList = [
+    'talk_posts',
+    'duration_first_last_talk_days',
+    'total_n_classifications',
+    'total_n_sessions',
+    'total_n_projects',
+    'total_unique_days',
+    'first_classification',
+    'last_classification',
+    'duration_first_last_talk_hours',
+    'duration_first_last_classification_hours',
+    'min_classifications_per_session',
+    'max_classifications_per_session',
+    'median_classifications_per_session',
+    'mean_classifications_per_session',
+    'mean_duration_classification_hours',
+    'median_duration_classification_hours',
+    'mean_duration_session_hours',
+    'median_duration_session_hours',
+    'min_duration_session_hours',
+    'max_duration_session_hours',
+    'mean_duration_session_first2_hours',
+    'mean_duration_session_last2_hours',
+    'mean_duration_classification_first2_hours',
+    'mean_duration_classification_last2_hours',
+    'min_number_projects_per_session',
+    'max_number_projects_per_session',
+    'median_number_projects_per_session',
+    'mean_number_projects_per_session'
+]
+
+userCountNestedFieldList = [
+    'total_n_classifications',
+    'project_duration_1_days',
+    'project_duration_2_days',
+    'total_n_sessions',
+    'max_classifications_per_session',
+    'mean_classifications_per_session',
+    'project_duration_hours',
+    'total_n_unique_days',
+    'mean_duration_session_hours',
+    'longest_active_session_hours',
+    'longest_inactive_session_hours',
+    'mean_duration_classification_hours'
+]
+
+
+class UserCountSet(views.APIView):
+    def get_queryset(self):
+        request_params = self.request.query_params.dict()
+        request_params.pop('page_size', 0)
+        request_params.pop('format', '')
+        user_list_filter = {}
+        for key, value in request_params.iteritems():
+            if ('__in' in key):
+                user_list_filter[key] = value.split(',')
+            else:
+                user_list_filter[key] = value
+        queryset = User.objects.all().order_by('id')
+        if (len(user_list_filter.keys()) > 0):
+            queryset = queryset.filter(**user_list_filter)
+        queryset = queryset.select_related('survey_project')
+        return queryset
+
+    def full_list(self, key, queryset, nested=False):
+        if nested:
+            return [user.survey_project.__getattribute__(key) for user in queryset]
+        else:
+            return [user.__getattribute__(key) for user in queryset]
+
+    def get(self, request, *args, **kwargs):
+        queryset = self.get_queryset()
+        ret = OrderedDict()
+        ret['count'] = len(queryset)
+        ret['survey_project'] = OrderedDict()
+        ret['survey_project']['project'] = Counter([user.survey_project.get_project_display() for user in queryset])
+        for field in userCountNestedFieldList:
+            ret['survey_project'][field] = self.full_list(field, queryset, nested=True)
+        ret['country'] = Counter([user.get_country_display() for user in queryset])
+        for field in userCountFieldList:
+            ret[field] = self.full_list(field, queryset)
+        return response.Response(ret)

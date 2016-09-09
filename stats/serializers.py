@@ -67,18 +67,6 @@ class QuestionSerializer(serializers.ModelSerializer):
         model = Question
         fields = ('number', 'category', 'kind', 'context', 'question_text')
 
-    ''' def to_representation(self, instance):
-        ret = OrderedDict()
-        fields = self._readable_fields
-        for field in fields:
-            try:
-                attribute = field.get_attribute(instance)
-            except SkipField:
-                continue
-            if attribute is not None:
-                ret[field.field_name] = field.to_representation(attribute)
-        return ret'''
-
 
 class AnswerEthnicitySerializer(serializers.ModelSerializer):
     answer = serializers.CharField(source='get_answer_display')

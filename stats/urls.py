@@ -9,6 +9,7 @@ router.register(r'counts', views.QuestionCountSet, base_name='Counts')
 
 urlpatterns = [
     url(r'^', include(router.urls)),
+    url(r'user/counts', views.UserCountSet.as_view(), name='user-counts'),
     url(r'^api-auth/',
         include('rest_framework.urls', namespace='rest_framework')
         ),
