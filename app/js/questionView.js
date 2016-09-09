@@ -256,7 +256,7 @@ export default class QuestionView extends React.Component {
   }
 
   getData() {
-    getQuestions({}, `/${this.props.params.questionNumber}/`)
+    getQuestions({}, `${this.props.params.questionNumber}/`)
       .then((question) => {
         this.setState({ question });
       });
