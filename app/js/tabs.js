@@ -59,7 +59,7 @@ const Tabs = () => (
       <NavItem eventKey={18}>Religion</NavItem>
     </LinkContainer>
     <LinkContainer to={{ pathname: '/Users' }}>
-      <NavItem eventKey={18}>Users</NavItem>
+      <NavItem eventKey={18}>Classification Data</NavItem>
     </LinkContainer>
   </Nav>
 );

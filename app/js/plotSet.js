@@ -49,7 +49,12 @@ export default class PlotSet extends React.Component {
     let ldx = 0;
     let bdx = 0;
     for (const info of plotOrder[this.props.params.categoryID]) {
-      const result = this.state.data.results[info.index];
+      let result;
+      if (typeof info.index === 'object') {
+        result = this.state.data.results[info.index[0]][info.index[1]];
+      } else {
+        result = this.state.data.results[info.index];
+      }
       switch (info.type) {
         case 'plot':
           let titleDiv;

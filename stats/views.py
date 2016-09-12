@@ -186,10 +186,15 @@ class UserCountSet(views.APIView):
         ret['count'] = len(queryset)
         ret['results'] = OrderedDict()
         ret['results']['survey_project'] = OrderedDict()
-        ret['results']['survey_project']['project'] = {'results': Counter([user.survey_project.get_project_display() for user in queryset]), 'plot_type': 'P', 'number': 'survey_project.project'}
+        ret['results']['survey_project']['project'] = {
+            'results': Counter([user.survey_project.get_project_display() for user in queryset]),
+            'plot_type': 'P',
+            'context': 'Survey Project Classification Data',
+            'number': 'survey_project.project'}
         for field in userCountNestedFieldList:
             ret['results']['survey_project'][field] = {'results': self.full_list(field, queryset, nested=True), 'plot_type': 'H', 'number': 'survey_project.{0}'.format(field)}
         ret['results']['country'] = {'results': Counter([user.get_country_display() for user in queryset]), 'plot_type': 'P', 'number': 'country'}
         for field in userCountFieldList:
             ret['results'][field] = {'results': self.full_list(field, queryset), 'plot_type': 'H', 'number': field}
+        ret['results']['total_n_classifications']['context'] = 'All Project Classification Data'
         return response.Response(ret)

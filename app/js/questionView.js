@@ -194,6 +194,7 @@ class QuestionPlot extends React.Component {
         onSubmit: this.handleSubmit.bind(this, this.props.questionNumber),
         count: this.state.count,
         busy: this.state.busy,
+        csv: false,
       };
       const popover = (
         <Popover title="Filters" id="popover-filters">

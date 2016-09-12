@@ -305,7 +305,32 @@ export const plotOrder = {
     legend('AD', { xs: 4 }),
   ],
   Users: [
+    context(['survey_project', 'project']),
+    pie(['survey_project', 'project'], 'Pro'),
+    legend('Pro', { xs: 4 }),
+    {
+      type: 'blank',
+      bs: {
+        xs: 4,
+      },
+    },
+    bar(['survey_project', 'total_n_classifications'], { autobinx: false, xbins: { start: 0, end: 60000, size: 2 } }, { title: 'Total Classifications', range: [0, 220] }),
+    bar(['survey_project', 'total_n_sessions'], { autobinx: false, xbins: { start: 0.5, end: 1500.5, size: 1 } }, { title: 'Total Sessions', range: [0, 22] }),
+    bar(['survey_project', 'mean_duration_classification_hours'], {}, { title: 'Average Classification Time (hours)' }),
+    bar(['survey_project', 'mean_duration_session_hours'], {}, { title: 'Average Session Time (hours)' }),
+    context('total_n_classifications'),
+    pie('country', 'Con'),
+    legend('Con', { xs: 4 }),
+    {
+      type: 'blank',
+      bs: {
+        xs: 4,
+      },
+    },
     bar('total_n_classifications', { autobinx: false, xbins: { start: 0, end: 600000, size: 20 } }, { title: 'Total Classifications', range: [0, 1700] }),
+    bar('total_n_sessions', { autobinx: false, xbins: { start: 0.5, end: 6200.5, size: 1 } }, { title: 'Total Sessions', range: [0, 125] }),
+    bar('mean_duration_classification_hours', {}, { title: 'Average Classification Time (hours)' }),
+    bar('mean_duration_session_hours', {}, { title: 'Average Session Time (hours)' }),
     bar('talk_posts', { autobinx: false, xbins: { start: -0.5, end: 25000.5, size: 1 } }, { title: 'Total Talk Posts', range: [0, 27] }),
   ],
 };

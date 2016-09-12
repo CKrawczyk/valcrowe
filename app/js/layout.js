@@ -147,6 +147,7 @@ export default class App extends React.Component {
       onSubmit: this.handleSubmit,
       count: this.state.count,
       busy: this.state.busy,
+      csv: true,
     };
     return (
       <Grid>

@@ -128,7 +128,7 @@ class User(models.Model):
         ('Fr', 'France'),
         ('Ne', 'Netherlands'),
         ('Po', 'Poland'),
-        ('In', 'Internatinal'),
+        ('In', 'International'),
     )
     country = models.CharField(
         choices=country_choices, max_length=2, db_index=True

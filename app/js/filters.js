@@ -101,7 +101,7 @@ const country = {
   Fr: 'France',
   Ne: 'Netherlands',
   Po: 'Poland',
-  In: 'Internatinal',
+  In: 'International',
 };
 
 const Filters = (props) => {
@@ -116,8 +116,14 @@ const Filters = (props) => {
     inner = `Showing ${props.count} out of 1913 responses`;
   }
   let csv;
-  if (props.categoryID) {
+  let footnote;
+  if (props.csv) {
     csv = <Csv bs={{ xs: 2 }} categoryID={props.categoryID} query={props.query} />;
+    footnote = (
+      <Col xs={12}>
+        <div className="home__center">Click any figure's title to compare that figure across different filter sets</div>
+      </Col>
+    );
   }
   let className = 'filters';
   if (props.className) {
@@ -138,6 +144,7 @@ const Filters = (props) => {
             {inner}
           </Col>
           {csv}
+          {footnote}
         </Row>
         <Collapse in={props.open}>
           <div>
@@ -174,6 +181,7 @@ Filters.propTypes = {
   count: React.PropTypes.number,
   open: React.PropTypes.bool,
   busy: React.PropTypes.bool,
+  csv: React.PropTypes.bool,
   categoryID: React.PropTypes.string,
   query: React.PropTypes.object,
   className: React.PropTypes.string,

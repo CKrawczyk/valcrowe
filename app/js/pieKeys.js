@@ -141,10 +141,74 @@ const EduKey = {
   },
 };
 
+const ProKey = {
+  'Galaxy Zoo': {
+    color: '#a6cee3',
+    text: 'Galaxy Zoo',
+  },
+  'Planet Hunter': {
+    color: '#1f78b4',
+    text: 'Planet Hunter',
+  },
+  'Penguin Watch': {
+    color: '#b2df8a',
+    text: 'Penguin Watch',
+  },
+  'Seafloor Explorer': {
+    color: '#33a02c',
+    text: 'Seafloor Explorer',
+  },
+  'Snapshot Serengeti': {
+    color: '#fb9a99',
+    text: 'Snapshot Serengeti',
+  },
+};
+
+const ConKey = {
+  'United States': {
+    color: '#a6cee3',
+    text: 'United States',
+  },
+  'United Kingdom': {
+    color: '#1f78b4',
+    text: 'United Kingdom',
+  },
+  Canada: {
+    color: '#b2df8a',
+    text: 'Canada',
+  },
+  Australia: {
+    color: '#33a02c',
+    text: 'Australia',
+  },
+  Germany: {
+    color: '#fb9a99',
+    text: 'Germany',
+  },
+  France: {
+    color: '#e31a1c',
+    text: 'France',
+  },
+  Netherlands: {
+    color: '#fdbf6f',
+    text: 'Netherlands',
+  },
+  Poland: {
+    color: '#ff7f00',
+    text: 'Poland',
+  },
+  International: {
+    color: '#cab2d6',
+    text: 'International',
+  },
+};
+
 export default {
   AD: ADKey,
   TF: TFKey,
   Gen: GenKey,
   Eth: EthKey,
   Edu: EduKey,
+  Pro: ProKey,
+  Con: ConKey,
 };
