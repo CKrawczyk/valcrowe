@@ -2,6 +2,10 @@ body {
   margin: 30px;
 }
 
+.btn {
+  white-space: normal;
+}
+
 .home__center {
   text-align: center;
 }
@@ -26,10 +30,6 @@ body {
   font-weight: normal;
 }
 
-.plots {
-  margin-top: 65px;
-}
-
 .plots__collapsing {
   position: relative;
   height: 0;
@@ -47,15 +47,10 @@ body {
   transition-property: margin-top;
 }
 
-.plots__open {
-  margin-top: 250px;
-}
-
 .filters {
   margin-top: 0;
   margin-left: 0;
   position: fixed;
-  width: 67%;
   z-index: 1002;
 }
 
@@ -122,4 +117,47 @@ hr {
 .popover {
   max-width: 965px;
   width: 965px;
+}
+
+@media only screen and (min-width : 768px) {
+  .filters {
+    width: 407px;
+  }
+
+    .plots {
+      margin-top: 105px;
+    }
+
+    .plots__open {
+      margin-top: 458px;
+    }
+}
+
+@media only screen and (min-width : 992px) {
+  .filters {
+    width: 778px;
+  }
+
+  .plots {
+    margin-top: 85px;
+  }
+
+  .plots__open {
+    margin-top: 290px;
+  }
+
+}
+
+@media only screen and (min-width : 1200px) {
+  .plots {
+    margin-top: 65px;
+  }
+
+  .plots__open {
+    margin-top: 250px;
+  }
+
+  .filters {
+    width: 945px;
+  }
 }

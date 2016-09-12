@@ -112,47 +112,47 @@ class UserViewSet(viewsets.ReadOnlyModelViewSet):
 
 userCountFieldList = [
     'talk_posts',
-    'duration_first_last_talk_days',
+    # 'duration_first_last_talk_days',
     'total_n_classifications',
     'total_n_sessions',
-    'total_n_projects',
-    'total_unique_days',
-    'first_classification',
-    'last_classification',
-    'duration_first_last_talk_hours',
-    'duration_first_last_classification_hours',
-    'min_classifications_per_session',
-    'max_classifications_per_session',
-    'median_classifications_per_session',
-    'mean_classifications_per_session',
+    # 'total_n_projects',
+    # 'total_unique_days',
+    # 'first_classification',
+    # 'last_classification',
+    # 'duration_first_last_talk_hours',
+    # 'duration_first_last_classification_hours',
+    # 'min_classifications_per_session',
+    # 'max_classifications_per_session',
+    # 'median_classifications_per_session',
+    # 'mean_classifications_per_session',
     'mean_duration_classification_hours',
-    'median_duration_classification_hours',
+    # 'median_duration_classification_hours',
     'mean_duration_session_hours',
-    'median_duration_session_hours',
-    'min_duration_session_hours',
-    'max_duration_session_hours',
-    'mean_duration_session_first2_hours',
-    'mean_duration_session_last2_hours',
-    'mean_duration_classification_first2_hours',
-    'mean_duration_classification_last2_hours',
-    'min_number_projects_per_session',
-    'max_number_projects_per_session',
-    'median_number_projects_per_session',
-    'mean_number_projects_per_session'
+    # 'median_duration_session_hours',
+    # 'min_duration_session_hours',
+    # 'max_duration_session_hours',
+    # 'mean_duration_session_first2_hours',
+    # 'mean_duration_session_last2_hours',
+    # 'mean_duration_classification_first2_hours',
+    # 'mean_duration_classification_last2_hours',
+    # 'min_number_projects_per_session',
+    # 'max_number_projects_per_session',
+    # 'median_number_projects_per_session',
+    # 'mean_number_projects_per_session'
 ]
 
 userCountNestedFieldList = [
     'total_n_classifications',
-    'project_duration_1_days',
-    'project_duration_2_days',
+    # 'project_duration_1_days',
+    # 'project_duration_2_days',
     'total_n_sessions',
-    'max_classifications_per_session',
-    'mean_classifications_per_session',
-    'project_duration_hours',
-    'total_n_unique_days',
+    # 'max_classifications_per_session',
+    # 'mean_classifications_per_session',
+    # 'project_duration_hours',
+    # 'total_n_unique_days',
     'mean_duration_session_hours',
-    'longest_active_session_hours',
-    'longest_inactive_session_hours',
+    # 'longest_active_session_hours',
+    # 'longest_inactive_session_hours',
     'mean_duration_classification_hours'
 ]
 
@@ -190,11 +190,26 @@ class UserCountSet(views.APIView):
             'results': Counter([user.survey_project.get_project_display() for user in queryset]),
             'plot_type': 'P',
             'context': 'Survey Project Classification Data',
-            'number': 'survey_project.project'}
+            'number': 'survey_project.project'
+        }
         for field in userCountNestedFieldList:
-            ret['results']['survey_project'][field] = {'results': self.full_list(field, queryset, nested=True), 'plot_type': 'H', 'number': 'survey_project.{0}'.format(field)}
-        ret['results']['country'] = {'results': Counter([user.get_country_display() for user in queryset]), 'plot_type': 'P', 'number': 'country'}
+            ret['results']['survey_project'][field] = {
+                'results': self.full_list(field, queryset, nested=True),
+                'plot_type': 'H',
+                'context': 'Survey Project Classification Data',
+                'number': 'survey_project.{0}'.format(field)
+            }
+        ret['results']['country'] = {
+            'results': Counter([user.get_country_display() for user in queryset]),
+            'plot_type': 'P',
+            'context': 'All Project Classification Data',
+            'number': 'country'
+        }
         for field in userCountFieldList:
-            ret['results'][field] = {'results': self.full_list(field, queryset), 'plot_type': 'H', 'number': field}
-        ret['results']['total_n_classifications']['context'] = 'All Project Classification Data'
+            ret['results'][field] = {
+                'results': self.full_list(field, queryset),
+                'plot_type': 'H',
+                'context': 'All Project Classification Data',
+                'number': field
+            }
         return response.Response(ret)

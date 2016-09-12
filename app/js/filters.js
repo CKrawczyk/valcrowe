@@ -118,7 +118,7 @@ const Filters = (props) => {
   let csv;
   let footnote;
   if (props.csv) {
-    csv = <Csv bs={{ xs: 2 }} categoryID={props.categoryID} query={props.query} />;
+    csv = <Csv bs={{ xs: 3 }} categoryID={props.categoryID} query={props.query} />;
     footnote = (
       <Col xs={12}>
         <div className="home__center">Click any figure's title to compare that figure across different filter sets</div>
@@ -137,10 +137,10 @@ const Filters = (props) => {
     <Col xs={12}>
       <Well bsSize="small" className={className}>
         <Row>
-          <Col xs={2}>
+          <Col xs={3}>
             {openButton}
           </Col>
-          <Col xs={8} className="filters__count">
+          <Col xs={6} className="filters__count">
             {inner}
           </Col>
           {csv}
@@ -152,7 +152,7 @@ const Filters = (props) => {
               <Col xs={12} className="filters__title">
                 User filters:
               </Col>
-              <Col xs={4}>
+              <Col xs={6} md={4}>
                 <Row>
                   <GtLtFilter {...props} query="answer_set__user__total_n_classifications" text="Classification Count" bs={{ xs: 12 }} />
                 </Row>
@@ -160,8 +160,8 @@ const Filters = (props) => {
                   <GtLtFilter {...props} query="answer_set__user__talk_posts" text="Talk Post" bs={{ xs: 12 }} />
                 </Row>
               </Col>
-              <CheckboxFilter {...props} query="answer_set__user__survey_project__project__in" text="Survey Project" options={surveyProject} bs={{ xs: 4 }} />
-              <CheckboxFilter {...props} query="answer_set__user__country__in" text="Country" options={country} bs={{ xs: 4 }} />
+              <CheckboxFilter {...props} query="answer_set__user__survey_project__project__in" text="Survey Project" options={surveyProject} bs={{ sm: 6, md: 4 }} />
+              <CheckboxFilter {...props} query="answer_set__user__country__in" text="Country" options={country} bs={{ sm: 6, md: 4 }} />
             </Row>
             <Row>
               <Col xs={4} xsOffset={4}>

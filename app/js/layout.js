@@ -152,12 +152,12 @@ export default class App extends React.Component {
     return (
       <Grid>
         <Row>
-          <Col xs={2}>
+          <Col xs={3} md={2}>
             <div className="sidebar">
               <Tabs />
             </div>
           </Col>
-          <Col xs={10} id="content">
+          <Col xs={7} md={10} id="content">
             {React.cloneElement(this.props.children, { query: this.state.query, filterProps, toggleBusy: this.toggleBusy })}
           </Col>
         </Row>

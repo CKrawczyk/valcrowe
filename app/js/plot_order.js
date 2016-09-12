@@ -1,4 +1,4 @@
-const legend = (legendType, bs = { xs: 12 }) => (
+const legend = (legendType, bs = { md: 12 }) => (
   {
     type: 'legend',
     bs,
@@ -6,7 +6,7 @@ const legend = (legendType, bs = { xs: 12 }) => (
   }
 );
 
-const context = (index, bs = { xs: 12 }) => (
+const context = (index, bs = { md: 12 }) => (
   {
     type: 'context',
     index,
@@ -18,7 +18,7 @@ const pie = (index, pieType = 'AD') => (
   {
     type: 'plot',
     index,
-    bs: { xs: 4 },
+    bs: { lg: 4, md: 6, sm: 12 },
     pieType,
   }
 );
@@ -35,7 +35,7 @@ const bar = (index, options = {}, xaxis = {}) => (
   {
     type: 'plot',
     index,
-    bs: { xs: 6 },
+    bs: { md: 6, sm: 12 },
     options,
     xaxis,
   }
@@ -51,18 +51,26 @@ const barSet = (list, options = {}, xaxis = {}) => {
 
 export const plotOrder = {
   Lo: [
+    legend('TF', { lg: 4, md: 6, sm: 12 }),
+    {
+      type: 'blank',
+      bs: {
+        lg: 8,
+        md: 6,
+        smHidden: true,
+      },
+    },
     pie(0, 'TF'),
     {
       type: 'plot',
       index: 1,
-      bs: { xs: 8 },
+      bs: { lg: 8, md: 12, sm: 12 },
     },
-    legend('TF', { xs: 4 }),
     context(2),
     {
       type: 'plot',
       index: 2,
-      bs: { xs: 12 },
+      bs: { md: 12, sm: 12 },
       options: {
         autobinx: false,
         xbins: {
@@ -178,20 +186,22 @@ export const plotOrder = {
     {
       type: 'blank',
       bs: {
-        xs: 4,
+        lg: 4,
+        mdHidden: true,
       },
     },
-    legend('Gen', { xs: 4 }),
-    legend('Eth', { xs: 4 }),
+    legend('Gen', { lg: 4, md: 6, sm: 6 }),
+    legend('Eth', { lg: 4, md: 6, sm: 6 }),
     context(3),
     ...pieSet([3, 7], 'TF'),
     {
       type: 'blank',
       bs: {
-        xs: 4,
+        lg: 4,
+        mdHidden: true,
       },
     },
-    legend('TF', { xs: 8 }),
+    legend('TF', { lg: 8, md: 12 }),
     context(4),
     ...barSet([4, 5, 6], { autobinx: false, xbins: { start: -0.5, end: 9.5, size: 1 } }),
   ],
@@ -200,10 +210,12 @@ export const plotOrder = {
     {
       type: 'blank',
       bs: {
-        xs: 8,
+        lg: 8,
+        md: 6,
+        smHidden: true,
       },
     },
-    legend('TF', { xs: 4 }),
+    legend('TF', { lg: 4, md: 6, sm: 12 }),
     context(1),
     {
       type: 'plot',
@@ -259,19 +271,21 @@ export const plotOrder = {
     {
       type: 'blank',
       bs: {
-        xs: 4,
+        lg: 4,
+        mdHidden: true,
       },
     },
-    legend('Edu', { xs: 8 }),
+    legend('Edu', { lg: 8, md: 12 }),
     context(2),
     ...pieSet([2, 3], 'TF'),
     {
       type: 'blank',
       bs: {
-        xs: 4,
+        lg: 4,
+        mdHidden: true,
       },
     },
-    legend('TF', { xs: 8 }),
+    legend('TF', { lg: 8, md: 12 }),
   ],
   Ti: [
     context(0),
@@ -290,28 +304,33 @@ export const plotOrder = {
     {
       type: 'blank',
       bs: {
-        xs: 8,
+        lg: 8,
+        md: 6,
+        smHidden: true,
       },
     },
-    legend('TF', { xs: 4 }),
+    legend('TF', { lg: 4, md: 6, sm: 12 }),
     context(1),
     pie(1),
     {
       type: 'blank',
       bs: {
-        xs: 8,
+        lg: 8,
+        md: 6,
+        smHidden: true,
       },
     },
-    legend('AD', { xs: 4 }),
+    legend('AD', { lg: 4, md: 6, sm: 12 }),
   ],
   Users: [
     context(['survey_project', 'project']),
     pie(['survey_project', 'project'], 'Pro'),
-    legend('Pro', { xs: 4 }),
+    legend('Pro', { lg: 4, md: 6, sm: 12 }),
     {
       type: 'blank',
       bs: {
-        xs: 4,
+        lg: 4,
+        mdHidden: true,
       },
     },
     bar(['survey_project', 'total_n_classifications'], { autobinx: false, xbins: { start: 0, end: 60000, size: 2 } }, { title: 'Total Classifications', range: [0, 220] }),
@@ -320,11 +339,12 @@ export const plotOrder = {
     bar(['survey_project', 'mean_duration_session_hours'], {}, { title: 'Average Session Time (hours)' }),
     context('total_n_classifications'),
     pie('country', 'Con'),
-    legend('Con', { xs: 4 }),
+    legend('Con', { lg: 4, md: 6, sm: 12 }),
     {
       type: 'blank',
       bs: {
-        xs: 4,
+        lg: 4,
+        mdHidden: true,
       },
     },
     bar('total_n_classifications', { autobinx: false, xbins: { start: 0, end: 600000, size: 20 } }, { title: 'Total Classifications', range: [0, 1700] }),
