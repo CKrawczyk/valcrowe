@@ -36,7 +36,7 @@ const Home = () => (
           <br />
           (Zooniverse Population versus Survye Sample)
         </h2>
-        <img src="/static/distribution_of_classifications.png" alt="Distribution of Classifcation Activity" />
+        <img className="img-responsive" src="/static/distribution_of_classifications.png" alt="Distribution of Classifcation Activity" />
       </div>
       <br />
       <h2>The Data</h2>

@@ -152,7 +152,7 @@ const Filters = (props) => {
               <Col xs={12} className="filters__title">
                 User filters:
               </Col>
-              <Col xs={6} md={4}>
+              <Col sm={6} md={4}>
                 <Row>
                   <GtLtFilter {...props} query="answer_set__user__total_n_classifications" text="Classification Count" bs={{ xs: 12 }} />
                 </Row>

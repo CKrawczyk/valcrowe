@@ -1,4 +1,4 @@
-const legend = (legendType, bs = { md: 12 }) => (
+const legend = (legendType, bs = { md: 12, xs: 12 }) => (
   {
     type: 'legend',
     bs,
@@ -6,7 +6,7 @@ const legend = (legendType, bs = { md: 12 }) => (
   }
 );
 
-const context = (index, bs = { md: 12 }) => (
+const context = (index, bs = { xs: 12, md: 12 }) => (
   {
     type: 'context',
     index,
@@ -18,7 +18,7 @@ const pie = (index, pieType = 'AD') => (
   {
     type: 'plot',
     index,
-    bs: { lg: 4, md: 6, sm: 12 },
+    bs: { lg: 4, md: 6, sm: 12, xs: 12 },
     pieType,
   }
 );
@@ -35,7 +35,7 @@ const bar = (index, options = {}, xaxis = {}) => (
   {
     type: 'plot',
     index,
-    bs: { md: 6, sm: 12 },
+    bs: { md: 6, sm: 12, xs: 12 },
     options,
     xaxis,
   }
@@ -51,26 +51,27 @@ const barSet = (list, options = {}, xaxis = {}) => {
 
 export const plotOrder = {
   Lo: [
-    legend('TF', { lg: 4, md: 6, sm: 12 }),
+    legend('TF', { lg: 4, md: 6, sm: 12, xs: 12 }),
     {
       type: 'blank',
       bs: {
         lg: 8,
         md: 6,
         smHidden: true,
+        xsHidden: true,
       },
     },
     pie(0, 'TF'),
     {
       type: 'plot',
       index: 1,
-      bs: { lg: 8, md: 12, sm: 12 },
+      bs: { lg: 8, md: 12, sm: 12, xs: 12 },
     },
     context(2),
     {
       type: 'plot',
       index: 2,
-      bs: { md: 12, sm: 12 },
+      bs: { md: 12, sm: 12, xs: 12 },
       options: {
         autobinx: false,
         xbins: {

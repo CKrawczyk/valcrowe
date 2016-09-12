@@ -2,6 +2,10 @@ body {
   margin: 30px;
 }
 
+.img-responsive {
+  display: inline;
+}
+
 .btn {
   white-space: normal;
 }
@@ -119,18 +123,32 @@ hr {
   width: 965px;
 }
 
+@media only screen and (max-width : 768px) {
+  .filters {
+    width: 58%;
+  }
+
+  .plots {
+    margin-top: 160px;
+  }
+
+  .plots__open {
+    margin-top: 657px;
+  }
+}
+
 @media only screen and (min-width : 768px) {
   .filters {
     width: 407px;
   }
 
-    .plots {
-      margin-top: 105px;
-    }
+  .plots {
+    margin-top: 105px;
+  }
 
-    .plots__open {
-      margin-top: 458px;
-    }
+  .plots__open {
+    margin-top: 458px;
+  }
 }
 
 @media only screen and (min-width : 992px) {
