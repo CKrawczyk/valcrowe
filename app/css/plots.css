@@ -118,11 +118,6 @@ hr {
   display:block;
 }
 
-.popover {
-  max-width: 965px;
-  width: 965px;
-}
-
 @media only screen and (max-width : 768px) {
   .filters {
     width: 58%;
@@ -134,6 +129,11 @@ hr {
 
   .plots__open {
     margin-top: 657px;
+  }
+  
+  .popover {
+    max-width: 58%;
+    width: 58%;
   }
 }
 
@@ -148,6 +148,11 @@ hr {
 
   .plots__open {
     margin-top: 458px;
+  }
+
+  .popover {
+    max-width: 407px;
+    width: 407px;
   }
 }
 
@@ -164,9 +169,17 @@ hr {
     margin-top: 290px;
   }
 
+  .popover {
+    max-width: 778px;
+    width: 778px;
+  }
 }
 
 @media only screen and (min-width : 1200px) {
+  .filters {
+    width: 945px;
+  }
+
   .plots {
     margin-top: 65px;
   }
@@ -175,7 +188,8 @@ hr {
     margin-top: 250px;
   }
 
-  .filters {
+  .popover {
+    max-width: 945px;
     width: 945px;
   }
 }
