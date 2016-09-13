@@ -160,7 +160,7 @@ const Filters = (props) => {
                   <GtLtFilter {...props} query="answer_set__user__talk_posts" text="Talk Post" bs={{ xs: 12 }} />
                 </Row>
               </Col>
-              <CheckboxFilter {...props} query="answer_set__user__survey_project__project__in" text="Survey Project" options={surveyProject} bs={{ sm: 6, md: 4 }} />
+              <CheckboxFilter {...props} query="answer_set__user__survey_project__project__in" text="Home Project" options={surveyProject} bs={{ sm: 6, md: 4 }} />
               <CheckboxFilter {...props} query="answer_set__user__country__in" text="Country" options={country} bs={{ sm: 6, md: 4 }} />
             </Row>
             <Row>

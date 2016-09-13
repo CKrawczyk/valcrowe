@@ -189,14 +189,14 @@ class UserCountSet(views.APIView):
         ret['results']['survey_project']['project'] = {
             'results': Counter([user.survey_project.get_project_display() for user in queryset]),
             'plot_type': 'P',
-            'context': 'Survey Project Classification Data',
+            'context': 'Home Project Classification Data',
             'number': 'survey_project.project'
         }
         for field in userCountNestedFieldList:
             ret['results']['survey_project'][field] = {
                 'results': self.full_list(field, queryset, nested=True),
                 'plot_type': 'H',
-                'context': 'Survey Project Classification Data',
+                'context': 'Home Project Classification Data',
                 'number': 'survey_project.{0}'.format(field)
             }
         ret['results']['country'] = {
