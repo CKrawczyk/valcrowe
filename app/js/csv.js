@@ -100,7 +100,12 @@ export default class Csv extends React.Component {
   render() {
     let inner;
     if (this.state.busyUsers || this.state.busyQuestions) {
-      inner = <Spinner noFadeIn />;
+      inner = (
+        <span>
+          {`${100 * (this.state.page - 1) / 20}% `}
+          <Spinner noFadeIn />
+        </span>
+      );
     } else {
       inner = 'Download visible data';
     }
