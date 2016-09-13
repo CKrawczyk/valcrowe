@@ -44,11 +44,19 @@ else:
 
 ALLOWED_HOSTS = []
 
+CACHES = {
+    'default': {
+        'BACKEND': 'django.core.cache.backends.db.DatabaseCache',
+        'LOCATION': 'volcrowe_cache_table',
+        'TIMEOUT': None,
+    }
+}
 
 # Application definition
 
 INSTALLED_APPS = [
     'rest_framework',
+    'rest_framework_cache',
     'stats.apps.StatsConfig',
     'webpack_loader',
     'django.contrib.admin',
@@ -66,7 +74,14 @@ MIDDLEWARE_CLASSES = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.auth.middleware.SessionAuthenticationMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'django.middleware.cache.UpdateCacheMiddleware',
+    'django.middleware.common.CommonMiddleware',
+    'django.middleware.cache.FetchFromCacheMiddleware',
 ]
+
+CACHE_MIDDLEWARE_ALIAS = 'default'
+CACHE_MIDDLEWARE_SECONDS = None
+CACHE_MIDDLEWARE_KEY_PREFIX = 'volcrowe'
 
 REST_FRAMEWORK = {
     'DEFAULT_PERMISSION_CLASSES': ('rest_framework.permissions.IsAuthenticatedOrReadOnly', ),
