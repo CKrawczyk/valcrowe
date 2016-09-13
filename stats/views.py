@@ -73,6 +73,7 @@ class UserViewSet(viewsets.ReadOnlyModelViewSet):
     def get_queryset(self):
         request_params = self.request.query_params.dict()
         request_params.pop('page_size', 0)
+        request_params.pop('page', 0)
         request_params.pop('format', '')
         user_list_filter = {}
         answer_list_filter = {}

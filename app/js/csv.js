@@ -11,12 +11,14 @@ export default class Csv extends React.Component {
   constructor(props) {
     super(props);
     this.getData = this.getData.bind(this);
-    this.toggleBusy = this.toggleBusy.bind(this);
+    this.getCsv = this.getCsv.bind(this);
     this.onSave = this.onSave.bind(this);
     this.onClick = this.onClick.bind(this);
     this.state = {
       busyQuestions: false,
       busyUsers: false,
+      page: 1,
+      results: [],
       csv: null,
       questions: null,
     };
@@ -24,7 +26,7 @@ export default class Csv extends React.Component {
 
   componentWillReceiveProps(nextProps) {
     if (this.props.categoryID !== nextProps.categoryID || this.props.query !== nextProps.query) {
-      this.setState({ csv: null, questions: null });
+      this.setState({ csv: null, questions: null, page: 1, results: [] });
     }
   }
 
@@ -46,9 +48,18 @@ export default class Csv extends React.Component {
     }
   }
 
+  getCsv() {
+    const flatData = this.state.results.map((datum) => (
+      flatten(datum, { safe: true })
+    ));
+    const csv = json2csv({ data: flatData });
+    this.setState({ csv, busyUsers: false }, () => { if (this.state.questions) { this.onSave(); } });
+  }
+
   getData() {
     const paramSet = {
-      page_size: 2000,
+      page_size: 100,
+      page: this.state.page,
       answer_list__question__category__category: this.props.categoryID,
     };
     /* eslint guard-for-in: 0 */
@@ -57,37 +68,33 @@ export default class Csv extends React.Component {
       const newKey = key.replace('answer_set__user__', '');
       paramSet[newKey] = this.props.query[key];
     }
-    this.toggleBusy('busyQuestions', () => {
-      getQuestions({ category: this.props.categoryID })
-        .then((data) => {
-          const questions = json2csv({ data: data.results });
-          this.setState({ questions, busyQuestions: false });
-        })
-        .then(() => {
-          if (this.state.csv && this.state.questions) {
-            this.onSave();
-          }
-        });
-    });
-    this.toggleBusy('busyUsers', () => {
+    if (!this.state.questions) {
+      this.setState({ busyQuestions: true }, () => {
+        getQuestions({ category: this.props.categoryID })
+          .then((data) => {
+            const questions = json2csv({ data: data.results });
+            this.setState({ questions, busyQuestions: false });
+          })
+          .then(() => {
+            if (this.state.csv && this.state.questions) {
+              this.onSave();
+            }
+          });
+      });
+    }
+    this.setState({ busyUsers: true }, () => {
       getUsers(paramSet)
         .then((data) => {
-          const flatData = data.results.map((datum) => (
-            flatten(datum, { safe: true })
-          ));
-          const csv = json2csv({ data: flatData });
-          this.setState({ csv, busyUsers: false });
-        })
-        .then(() => {
-          if (this.state.csv && this.state.questions) {
-            this.onSave();
+          const results = [...this.state.results, ...data.results];
+          let callback;
+          if (data.next) {
+            callback = this.getData;
+          } else {
+            callback = this.getCsv;
           }
+          this.setState({ results, page: this.state.page + 1 }, callback);
         });
     });
-  }
-
-  toggleBusy(key, callback) {
-    this.setState({ [key]: !this.state[key] }, callback);
   }
 
   render() {
