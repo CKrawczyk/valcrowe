@@ -49,6 +49,9 @@ CACHES = {
         'BACKEND': 'django.core.cache.backends.db.DatabaseCache',
         'LOCATION': 'volcrowe_cache_table',
         'TIMEOUT': None,
+        'OPTIONS': {
+            'MAX_ENTRIES': 10000
+        }
     }
 }
 

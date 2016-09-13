@@ -68,7 +68,7 @@ export default class Csv extends React.Component {
       const newKey = key.replace('answer_set__user__', '');
       paramSet[newKey] = this.props.query[key];
     }
-    if (!this.state.questions) {
+    if (this.state.page === 1) {
       this.setState({ busyQuestions: true }, () => {
         getQuestions({ category: this.props.categoryID })
           .then((data) => {
@@ -102,7 +102,7 @@ export default class Csv extends React.Component {
     if (this.state.busyUsers || this.state.busyQuestions) {
       inner = (
         <span>
-          {`${100 * (this.state.page - 1) / 20}% `}
+          {`${100 * (this.state.page - 1) / 20}% done building csv`}
           <Spinner noFadeIn />
         </span>
       );
