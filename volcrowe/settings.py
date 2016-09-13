@@ -56,7 +56,6 @@ CACHES = {
 
 INSTALLED_APPS = [
     'rest_framework',
-    'rest_framework_cache',
     'stats.apps.StatsConfig',
     'webpack_loader',
     'django.contrib.admin',
